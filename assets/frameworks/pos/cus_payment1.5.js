@@ -87,7 +87,7 @@ $('.prd_icheck').iCheck({
                 newsalesperson:newsalesperson
             },
             success: function(data) {
-                console.log("Customer Data:", data); 
+                console.log("Customer Data:", data);
                 $("#customer").html('<option value="">Select Customer</option>');
                 
                 // Populate the dropdown with customers
@@ -113,6 +113,8 @@ $('.prd_icheck').iCheck({
         });
     });
 
+   
+
     $('#customer').on('change', function() {
         var cusCode = $(this).val(); 
         console.log("Customer Code selected:", cusCode);
@@ -128,9 +130,10 @@ $('.prd_icheck').iCheck({
     });
     cusCode =$("#customer").val();
 
-    if(cusCode!=''){
-        loadCustomerDatabyId(cusCode);
-    }
+    // if(cusCode!=''){
+    //     loadCustomerDatabyId(cusCode);
+    // }
+   
 
     $("#advanceno").autocomplete({
         source: function(request, response) {
@@ -224,19 +227,23 @@ function loadAdvanceData(pay_no){
             data: { payid: pay_no },
             success: function(data) {
                 var resultData = JSON.parse(data);
+                // console.log(resultData.return.ReturnAmount);
 
                 if (resultData.return){
-                    return_amount = parseFloat(resultData.return.ReturnAmount);
+                    return_amount =(resultData.return.ReturnAmount);
                     return_payment_no = resultData.return.ReturnNo;
-                    pay_amount = parseFloat(return_amount);
-                    $("#payAmount").val(return_amount);
+                  
+                    $("#returnPyment").text(Number(return_amount).toFixed(2));
                     // addPayment(cashAmount, creditAmount, cardAmount,chequeAmount,cusType,advance_amount,bank_amount,return_amount);
                 }
             }
         });
     }
 
-    function loadCustomerDatabyId(cuscode){
+
+    //customer autoload
+
+    function loadCustomerDatabyId(cusCode){
         $("#tbl_payment tbody").html("");
             total_due_amount = 0;
             total_over_payment = 0;
@@ -244,10 +251,11 @@ function loadAdvanceData(pay_no){
             $.ajax({
                 type: "POST",
                 url: "../../admin/Payment/getCustomersDataById",
-                data: { cusCode: cuscode},
+                data: { cusCode: cusCode},
                 success: function(data)
                 {
-                    var resultData = JSON.parse(data);
+                    var resultData =JSON.parse(data);
+                   
                     var returnComplete = 0;
 
                     if (resultData.over_return__complete_payments === null) {
@@ -258,19 +266,21 @@ function loadAdvanceData(pay_no){
 
                     cusCode = resultData.cus_data.CusCode;
                     outstanding = parseFloat(resultData.total_credit) - parseFloat(resultData.total_payment) - parseFloat(resultData.return_payment) + parseFloat(returnComplete);
-                    available_balance = parseFloat(resultData.cus_data.CreditLimit) - parseFloat(outstanding);
+                    available_balance = parseFloat(resultData.cus_data.CreditLimit) - parseFloat(settledAmount);
                     customer_name=resultData.cus_data.CusName;
                     $("#cusCode").html(resultData.cus_data.CusName);
                     $("#customer").val(resultData.cus_data.CusCode);
                     $("#creditLimit").html(accounting.formatMoney(resultData.cus_data.CreditLimit));
                     $("#creditPeriod").html(resultData.cus_data.CreditPeriod);
                     $("#returnPyment").html(accounting.formatMoney(resultData.return_payment));
-                    $("#returnAvailable").html(accounting.formatMoney(resultData.return_payments));
+                    $("#returnAvailable").html(accounting.formatMoney(resultData.available_balance));
                     $("#creditAmount").html(accounting.formatMoney(resultData.total_credit));
                     $("#settledAmount").html(accounting.formatMoney(resultData.total_payment));
                     $("#cusOutstand").html(accounting.formatMoney(outstanding));
                     $("#availableCreditLimit").html(accounting.formatMoney(available_balance));
                     $("#city").html(resultData.cus_data.MobileNo);
+                    $("#newsalesperson").html(resultData.cus_data.RepName);
+                    $("#route").html(resultData.cus_data.name);
 
 
                     var creditAmount = 0;
@@ -297,7 +307,7 @@ function loadAdvanceData(pay_no){
                         var isdueZero = creditAmount - settleAmount-returnAmount;
                         var isclose = (settleAmount == creditAmount);
                         if (isdueZero !== 0 && isclose === false){
-console.log('key',key);
+                        console.log('key',key);
                         $("#tbl_payment tbody").append("<tr id='" + z + "'>" +
                             "<td>" + z + "&nbsp;&nbsp;<input rowid='"+z+"' type='checkbox' name='rownum' class='prd_icheck rowcheck '></td>" +
                             "<td  class='invoiceNo'>" + paymentNo + "</td>" +
@@ -348,11 +358,13 @@ console.log('key',key);
 
 
     }
+
+
     //customer autoload
     // $("#customer").autocomplete({
     //     source: function(request, response) {
     //         cusType = $("#CustType option:selected").val();
-
+    //
     //         $.ajax({
     //             url: 'loadcustomersjson',
     //             dataType: "json",
@@ -377,7 +389,7 @@ console.log('key',key);
     //         $("#tbl_payment tbody").html("");
     //         total_due_amount = 0;
     //         total_over_payment = 0;
-
+    //
     //         $.ajax({
     //             type: "POST",
     //             url: "../../admin/Payment/getCustomersDataById",
@@ -385,15 +397,15 @@ console.log('key',key);
     //             success: function(data)
     //             {
     //                 var resultData = JSON.parse(data);
-
+    //
     //                 var returnComplete = 0;
-
+    //
     //                 if (resultData.over_return__complete_payments === null) {
     //                     returnComplete = 0.00;
     //                 } else {
     //                     returnComplete = resultData.over_return__complete_payments;
     //                 }
-
+    //
     //                 cusCode = resultData.cus_data.CusCode;
     //                 outstanding = parseFloat(resultData.total_credit) - parseFloat(resultData.total_payment) - parseFloat(resultData.return_payment) + parseFloat(returnComplete);
     //                 available_balance = parseFloat(resultData.cus_data.CreditLimit) - parseFloat(outstanding);
@@ -409,13 +421,15 @@ console.log('key',key);
     //                 $("#cusOutstand").html(accounting.formatMoney(outstanding));
     //                 $("#availableCreditLimit").html(accounting.formatMoney(available_balance));
     //                 $("#city").html(resultData.cus_data.MobileNo);
-
-
+    //                 $("#newsalesperson").html(resultData.cus_data.RepName);
+    //                 $("#route").html(resultData.cus_data.name);
+    //
+    //
     //                 var creditAmount = 0;
     //                 var settleAmount = 0;
     //                 var z = 1;
     //                 $.each(resultData.credit_data, function(key, value) {
-
+    //
     //                     var paymentNo = value.InvoiceNo;
     //                     var invDate = value.InvoiceDate;
     //                     var totalNetAmount = parseFloat(value.NetAmount);
@@ -425,7 +439,7 @@ console.log('key',key);
     //                     var customerPayment = parseFloat(value.payAmount);
     //                     var dueAmount = 0;
     //                     total_due_amount += (creditAmount - settleAmount-returnAmount);
-
+    //
     //                     var isdueZero = creditAmount - settleAmount-returnAmount;
     //                     var isclose = (settleAmount == creditAmount);
     //                     if (isdueZero !== 0 && isclose === false) {
@@ -443,8 +457,8 @@ console.log('key',key);
     //                     }
     //                    // $("#cusOutstand").html(accounting.formatMoney(total_due_amount));
     //                 });
-
-
+    //
+    //
     //                 // $.each(resultData.return_data, function(key, value) {
     //                 //
     //                 //     var paymentNo = value.InvoiceNo;
@@ -464,15 +478,23 @@ console.log('key',key);
     //                 //     $("#over_payment_rows").append("<tr style='background-color:#fbb5b5;' ><td>" + (key + 1) + "&nbsp;&nbsp;</td><td  class='invoiceNo'>" + paymentNo + " Return </td><td>" + invDate + "</td><td class='text-right'>" + accounting.formatMoney(totalNetAmount) + "</td><td class='text-right creditAmount'>" + accounting.formatMoney(creditAmount) + "</td><td class='text-right settleAmount' invPay='0'>" + accounting.formatMoney(0) + "</td><td class='text-right returnAmount' invPay='0'>" + accounting.formatMoney(settleAmount) + "</td><td class='text-right dueAmount' isColse='0'>" + accounting.formatMoney(creditAmount - settleAmount-returnAmount) + "</td><td></td></tr>");
     //                 //     // $("#cusOutstand").html(accounting.formatMoney(total_due_amount));
     //                 // });
-
+    //
     //                 // $("#tbl_payment").dataTable().fnDestroy();
     //             }
     //         });
-
-
+    //
+    //
     //     }
     // });
-
+    //
+    // function clearCustomerData() {
+    //     $("#cusCode").html('');
+    //     $("#cusAddress").html('');
+    //     $("#cusAddress2").html('');
+    //     $("#cusPhone").html('');
+    //     $("#newsalesperson").html('');
+    //     $("#route").html('');
+    // }
     $("#bank").select2({
         placeholder: "Select a bank",
         allowClear: true,
@@ -664,6 +686,7 @@ console.log('key',key);
     $("#pay").click(function() {
 
         var payType = $("#payType option:selected").val();
+       
         var paymentType = $("#payType option:selected").html();
         var payDate = $("#invDate").val();
         var chequeDate = $("#chequeDate").val();

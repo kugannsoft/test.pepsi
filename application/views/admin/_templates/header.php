@@ -137,6 +137,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <script>$(document).ready(function() { $('body').addClass('sidebar-collapse'); });</script>
             <script src="<?php echo base_url('assets/frameworks/job/add_sales_invoice1.6.js'); ?>"></script>
         <?php endif; ?>
+        <?php if ($this->router->fetch_method() == 'addPreSalesInvoice'): ?>
+            <script>$(document).ready(function() { $('body').addClass('sidebar-collapse'); });</script>
+            <script src="<?php echo base_url('assets/frameworks/job/add_sales_invoice1.6.js'); ?>"></script>
+        <?php endif; ?>
         <?php if ($this->router->fetch_method() == 'addIssueNote'): ?>
             <script>$(document).ready(function() { $('body').addClass('sidebar-collapse'); });</script>
             <script src="<?php echo base_url('assets/frameworks/job/add_issue_note.js'); ?>"></script>
@@ -364,6 +368,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <?php endif; ?>
             <?php if ($this->router->fetch_method() == 'return_invoice'): ?>
                 <script src="<?php echo base_url('assets/frameworks/pos/return_invoice1.1.js'); ?>"></script>
+            <?php endif; ?>
+            <?php if ($this->router->fetch_method() == 'received_invoice'): ?>
+                <script src="<?php echo base_url('assets/frameworks/pos/received_invoice.1.js'); ?>"></script>
             <?php endif; ?>
             <script src="<?php echo base_url($frameworks_dir . '/bootstrap/js/bootstrap-switch.min.js'); ?>"></script>
             <script src="<?php echo base_url($plugins_dir . '/account/accounting.min.js'); ?>"></script>

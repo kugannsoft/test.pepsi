@@ -66,13 +66,13 @@ $(document).ready(function() {
                                     ItemCodeArr.push(ItemCode);
                                     
 
-                                    $("#tbl_payment tbody").append("<tr id='" + (key + 1) + "'><td>" + (key + 1) + "</td><td>" + ItemCode + "</td><td>" + Product + "</td><td>" + value.SerialNo + "</td><td>" + value.GRN_Qty + "</td><td>" + value.GRN_FreeQty + "</td><td class='text-right'>" + accounting.formatMoney(value.GRN_UnitCost) + "</td><td class='text-right'>" + accounting.formatMoney(value.GRN_DisAmount) + "</td><td class='text-right'>" + accounting.formatMoney(value.GRN_NetAmount) + "</td></tr>");
+                                    $("#tbl_payment tbody").append("<tr id='" + (key + 1) + "'><td>" + (key + 1) + "</td><td>" + ItemCode + "</td><td>" + Product + "</td><td>" + value.GRN_Qty + "</td><td>" + value.GRN_FreeQty + "</td><td class='text-right'>" + accounting.formatMoney(value.GRN_UnitCost) + "</td><td class='text-right'>" + accounting.formatMoney(value.GRN_DisAmount) + "</td><td class='text-right'>" + accounting.formatMoney(value.GRN_NetAmount) + "</td></tr>");
                                     $("#totalAmount").html(accounting.formatMoney(value.GRN_totalAmount));
                                     $("#totalDis").html(accounting.formatMoney(value.TotalDiscount));
                                     $("#totalNet").html(accounting.formatMoney(value.totalNet));
                                 });
 
-                                $("#tbl_payment tbody").append("<tr ><td></td><td  class='invoiceNo'></td><td></td><td></td><td></td><td></td><td></td><td>Sub Total</td><td class='text-right'><b>" + accounting.formatMoney(TotalAmount) + "</b></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td>Product Discount</td><td class='text-right'><b>" + accounting.formatMoney(proDiscount) + "</b></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td>Total Net Amount</td><td class='text-right'><b>" + accounting.formatMoney(TotalNetAmount) + "</b></td></tr>");
+                                $("#tbl_payment tbody").append("<tr ><td></td><td  class='invoiceNo'></td><td></td><td></td><td></td><td></td><td>Sub Total</td><td class='text-right'><b>" + accounting.formatMoney(TotalAmount) + "</b></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td>Product Discount</td><td class='text-right'><b>" + accounting.formatMoney(proDiscount) + "</b></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td>Total Net Amount</td><td class='text-right'><b>" + accounting.formatMoney(TotalNetAmount) + "</b></td></tr>");
 
                             }
                         });

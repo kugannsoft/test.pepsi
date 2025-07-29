@@ -133,7 +133,9 @@ class Salesinvoice_model extends CI_Model {
         $proNameArr = json_decode($_POST['proName']);
         $salesPersonArr = json_decode($_POST['salePerson']);
         $warrantytypeArr = json_decode($_POST['warrantytype']);
-        $location = $post['location'];
+        $is_returnArr = json_decode($_POST['is_return']);
+        $return_typeArr = json_decode($_POST['return_type']);
+        $location = 1;
         $customerPonumber = $post['po_number'];
         $mchange = $post['mchange'];
         $total_Netamount = $post['total_net_amount'];
@@ -150,56 +152,67 @@ class Salesinvoice_model extends CI_Model {
 
             $totalCost += ($qtyArr[$i]*$cost_priceArr[$i]);
 
-            //get warranty period
+        //get warranty period
             $WarrantyMonth = $this->db->select('WarrantyPeriod')->from('productcondition')->where('ProductCode',$product_codeArr[$i])->get()->row()->WarrantyPeriod;
 
             //insert sales invoice details
             $grnDtl = array(
-                    'AppNo' => '1',
-                    'SalesInvNo' => $grnNo,
-                    'SalesInvLineNo' => $i,
-                    'SalesInvLocation' => $location,
-                    'SalesInvDate'=> $grnHed['SalesDate'],
-                    'SalesProductCode' => $product_codeArr[$i],
-                    'SalesUnitPerCase' => $upcArr[$i],
-                    'SalesCaseOrUnit' => $unitArr[$i],
-                    'SalesSerialNo' => $serial_noArr[$i],
-                    'SalesProductName' => $proNameArr[$i],
-                    'SalesQty' => $qtyArr[$i],
-                    'SalesPriceLevel' => $price_levelArr[$i],
-                    'SalesFreeQty' => $freeQtyArr[$i],
-                    'SalesCostPrice' => $cost_priceArr[$i],
-                    'SalesUnitPrice' => $sell_priceArr[$i],
-                    'SalesDisValue' => $pro_discountArr[$i],
-                    'SalesDisPercentage' => $pro_discount_precentArr[$i],
-                    'SalesIsVat' => $isVatArr[$i],
-                    'SalesIsNbt' => $isNbtArr[$i],
-                    'SalesNbtRatio' => $nbtRatioArr[$i],
-                    'SalesVatAmount' => $proVatArr[$i],
-                    'SalesNbtAmount' => $proNbtArr[$i],
-                    'SalesTotalAmount' => $totalAmountArr[$i],
-                    'SalesInvNetAmount' => $total_netArr[$i],
-                    'SalesPerson' => $salesPersonArr[$i],
-                    'SalesPerson' => $salesPersonArr[$i],
-                    'WarrantyMonthNew'=>$warrantytypeArr[$i],
-                    'SellingPriceORG'=>$orgSell_priceArr[$i]
-                );
+                'AppNo' => '1',
+                'SalesInvNo' => $grnNo,
+                'SalesInvLineNo' => $i,
+                'SalesInvLocation' => isset($location) ? $location : '',
+                'SalesInvDate' => isset($grnHed['SalesDate']) ? $grnHed['SalesDate'] : date('Y-m-d H:i:s'),
+                'SalesProductCode' => isset($product_codeArr[$i]) ? $product_codeArr[$i] : '',
+                'SalesUnitPerCase' => isset($upcArr[$i]) ? $upcArr[$i] : '0',
+                'SalesCaseOrUnit' => isset($unitArr[$i]) ? $unitArr[$i] : '',
+                'SalesSerialNo' => isset($serial_noArr[$i]) ? $serial_noArr[$i] : '',
+                'SalesProductName' => isset($proNameArr[$i]) ? $proNameArr[$i] : '',
+                'SalesQty' => isset($qtyArr[$i]) ? (int)$qtyArr[$i] : 0,
+                'SalesPriceLevel' => isset($price_levelArr[$i]) ? $price_levelArr[$i] : '',
+                'SalesFreeQty' => isset($freeQtyArr[$i]) ? (int)$freeQtyArr[$i] : 0,
+                'SalesCostPrice' => isset($cost_priceArr[$i]) ? (float)$cost_priceArr[$i] : 0,
+                'SalesUnitPrice' => isset($sell_priceArr[$i]) ? (float)$sell_priceArr[$i] : 0,
+                'SalesDisValue' => isset($pro_discountArr[$i]) ? (float)$pro_discountArr[$i] : 0,
+                'SalesDisPercentage' => isset($pro_discount_precentArr[$i]) ? (float)$pro_discount_precentArr[$i] : 0,
+                'SalesIsVat' => isset($isVatArr[$i]) ? (int)$isVatArr[$i] : 0,
+                'SalesIsNbt' => isset($isNbtArr[$i]) ? (int)$isNbtArr[$i] : 0,
+                'SalesNbtRatio' => isset($nbtRatioArr[$i]) ? (float)$nbtRatioArr[$i] : 0,
+                'SalesVatAmount' => isset($proVatArr[$i]) ? (float)$proVatArr[$i] : 0,
+                'SalesNbtAmount' => isset($proNbtArr[$i]) ? (float)$proNbtArr[$i] : 0,
+                'SalesTotalAmount' => isset($totalAmountArr[$i]) ? (float)$totalAmountArr[$i] : 0,
+                'SalesInvNetAmount' => isset($total_netArr[$i]) ? (float)$total_netArr[$i] : 0,
+                'SalesPerson' => isset($salesPersonArr[$i]) ? $salesPersonArr[$i] : '',
+                'WarrantyMonthNew' => isset($warrantytypeArr[$i]) ? $warrantytypeArr[$i] : '',
+                'SellingPriceORG' => isset($orgSell_priceArr[$i]) ? (float)$orgSell_priceArr[$i] : 0,
+                'Is_Return' => isset($is_returnArr[$i]) ? (float)$is_returnArr[$i] : 0,
+                'ReturnType' => isset($return_typeArr[$i]) ? (float)$return_typeArr[$i] : 0
+            );
             $this->db->insert('salesinvoicedtl', $grnDtl);
-            $sellPrice =0;
+           
+           // $sellPrice =0;
 
             if($sell_priceArr[$i]==0){
                 $sellPrice=$orgSell_priceArr[$i];
             }else{
                 $sellPrice=$sell_priceArr[$i];
             }
-            //update stock
-             $this->db->query("CALL SPP_UPDATE_PRICE_STOCK('$product_codeArr[$i]','$qtyArr[$i]','$price_levelArr[$i]','$cost_priceArr[$i]','$sellPrice','$location','$serial_noArr[$i]','$freeQtyArr[$i]','0','0')");
+            if($return_typeArr[$i] == 2){
+                 $this->db->update('productstock',array('Damage'=>$qtyArr[$i]),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location));
+                  $this->db->update('pricestock',array('Damage'=>$qtyArr[$i]),array('ProductCode'=> $product_codeArr[$i],'Price'=> $sell_priceArr[$i],'Location'=> $location));
+            }elseif($return_typeArr[$i] == 3){
+                $this->db->update('productstock',array('Expired'=>$qtyArr[$i]),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location));
+                $this->db->update('pricestock',array('Expired'=>$qtyArr[$i]),array('ProductCode'=> $product_codeArr[$i],'Price'=> $sell_priceArr[$i],'Location'=> $location));
+            }else{
+                //update stock
+                $this->db->query("CALL SPP_UPDATE_PRICE_STOCK('$product_codeArr[$i]','$qtyArr[$i]','$price_levelArr[$i]','$cost_priceArr[$i]','$sellPrice','$location','$serial_noArr[$i]','$freeQtyArr[$i]','0','0')");
+   
+               //update serial stock
+               if($serial_noArr[$i]!=''){
+                    $this->db->update('productserialstock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=> $serial_noArr[$i]));
+               }
 
-            //update serial stock
-            if($serial_noArr[$i]!=''){
-                 $this->db->update('productserialstock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=> $serial_noArr[$i]));
             }
-        }
+         }
         
         $cashAmount = $_POST['cashAmount'];
         $creditAmount = $_POST['creditAmount'];
@@ -441,13 +454,16 @@ class Salesinvoice_model extends CI_Model {
         $grnHed['SalesCostAmount'] = $totalCost;
         $this->bincard($grnNo,1,'Created');//update bincard
         $this->db->insert('salesinvoicehed', $grnHed);
+
+
         $creditAmount = $_POST['creditAmount'];
         if($creditAmount>0){
             $SalesInvType=3;
         }else{
-            $SalesInvType=$_POST['invType'];
+            $SalesInvType=1;
         }
 
+       
         if($SalesInvType==1){
            $this->update_max_code('SalesInvoiceNo'.$location);
         }elseif ($SalesInvType==2) {
@@ -519,10 +535,10 @@ class Salesinvoice_model extends CI_Model {
                                 $selp = $row['SalesUnitPrice'];
 
                             //update price stock
-                           $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$proCode','$totalGrnQty','$pl','$costp','$selp','$loc')");
+                            $this->db->query("CALL SPT_UPDATE_PRICE_STOCK('$proCode','$totalGrnQty','$pl','$costp','$selp','$loc')");
 
                             //update product stock
-                           $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$proCode','$totalGrnQty',0,'$loc')"); 
+                            $this->db->query("CALL SPT_UPDATE_PRO_STOCK('$proCode','$totalGrnQty',0,'$loc')"); 
                         // }   
                     }
                 }
@@ -571,37 +587,70 @@ class Salesinvoice_model extends CI_Model {
             $WarrantyMonth = $this->db->select('WarrantyPeriod')->from('productcondition')->where('ProductCode',$product_codeArr[$i])->get()->row()->WarrantyPeriod;
 
             //insert sales invoice details
+            // $grnDtl = array(
+            //         'AppNo' => '1',
+            //         'SalesInvNo' => $grnNo,
+            //         'SalesInvLineNo' => $i,
+            //         'SalesInvLocation' => $location,
+            //         'SalesInvDate'=> $grnHed['SalesOrgDate'],
+            //         'SalesProductCode' => $product_codeArr[$i],
+            //         'SalesUnitPerCase' => $upcArr[$i],
+            //         'SalesCaseOrUnit' => $unitArr[$i],
+            //         'SalesSerialNo' => $serial_noArr[$i],
+            //         'SalesProductName' => $proNameArr[$i],
+            //         'SalesQty' => $qtyArr[$i],
+            //         'SalesPriceLevel' => $price_levelArr[$i],
+            //         'SalesFreeQty' => $freeQtyArr[$i],
+            //         'SalesCostPrice' => $cost_priceArr[$i],
+            //         'SalesUnitPrice' => $sell_priceArr[$i],
+            //         'SalesDisValue' => $pro_discountArr[$i],
+            //         'SalesDisPercentage' => $pro_discount_precentArr[$i],
+            //         'SalesIsVat' => $isVatArr[$i],
+            //         'SalesIsNbt' => $isNbtArr[$i],
+            //         'SalesNbtRatio' => $nbtRatioArr[$i],
+            //         'SalesVatAmount' => $proVatArr[$i],
+            //         'SalesNbtAmount' => $proNbtArr[$i],
+            //         'SalesTotalAmount' => $totalAmountArr[$i],
+            //         'SalesInvNetAmount' => $total_netArr[$i],
+            //         'SalesPerson' => $salesPersonArr[$i],
+            //         'WarrantyMonthNew' => $warrantytypeArr[$i],
+            //         'WarrantyMonth'=>$WarrantyMonth,
+            //         'SellingPriceORG'=>$orgSell_priceArr[$i]
+            //     );
+
             $grnDtl = array(
-                    'AppNo' => '1',
-                    'SalesInvNo' => $grnNo,
-                    'SalesInvLineNo' => $i,
-                    'SalesInvLocation' => $location,
-                    'SalesInvDate'=> $grnHed['SalesOrgDate'],
-                    'SalesProductCode' => $product_codeArr[$i],
-                    'SalesUnitPerCase' => $upcArr[$i],
-                    'SalesCaseOrUnit' => $unitArr[$i],
-                    'SalesSerialNo' => $serial_noArr[$i],
-                    'SalesProductName' => $proNameArr[$i],
-                    'SalesQty' => $qtyArr[$i],
-                    'SalesPriceLevel' => $price_levelArr[$i],
-                    'SalesFreeQty' => $freeQtyArr[$i],
-                    'SalesCostPrice' => $cost_priceArr[$i],
-                    'SalesUnitPrice' => $sell_priceArr[$i],
-                    'SalesDisValue' => $pro_discountArr[$i],
-                    'SalesDisPercentage' => $pro_discount_precentArr[$i],
-                    'SalesIsVat' => $isVatArr[$i],
-                    'SalesIsNbt' => $isNbtArr[$i],
-                    'SalesNbtRatio' => $nbtRatioArr[$i],
-                    'SalesVatAmount' => $proVatArr[$i],
-                    'SalesNbtAmount' => $proNbtArr[$i],
-                    'SalesTotalAmount' => $totalAmountArr[$i],
-                    'SalesInvNetAmount' => $total_netArr[$i],
-                    'SalesPerson' => $salesPersonArr[$i],
-                    'WarrantyMonthNew' => $warrantytypeArr[$i],
-                    'WarrantyMonth'=>$WarrantyMonth,
-                    'SellingPriceORG'=>$orgSell_priceArr[$i]
-                );
+                'AppNo' => '1',
+                'SalesInvNo' => $grnNo,
+                'SalesInvLineNo' => $i,
+                'SalesInvLocation' => isset($location) ? $location : '',
+                'SalesInvDate' => isset($grnHed['SalesDate']) ? $grnHed['SalesDate'] : date('Y-m-d H:i:s'),
+                'SalesProductCode' => isset($product_codeArr[$i]) ? $product_codeArr[$i] : '',
+                'SalesUnitPerCase' => isset($upcArr[$i]) ? $upcArr[$i] : '0',
+                'SalesCaseOrUnit' => isset($unitArr[$i]) ? $unitArr[$i] : '',
+                'SalesSerialNo' => isset($serial_noArr[$i]) ? $serial_noArr[$i] : '',
+                'SalesProductName' => isset($proNameArr[$i]) ? $proNameArr[$i] : '',
+                'SalesQty' => isset($qtyArr[$i]) ? (int)$qtyArr[$i] : 0,
+                'SalesPriceLevel' => isset($price_levelArr[$i]) ? $price_levelArr[$i] : '',
+                'SalesFreeQty' => isset($freeQtyArr[$i]) ? (int)$freeQtyArr[$i] : 0,
+                'SalesCostPrice' => isset($cost_priceArr[$i]) ? (float)$cost_priceArr[$i] : 0,
+                'SalesUnitPrice' => isset($sell_priceArr[$i]) ? (float)$sell_priceArr[$i] : 0,
+                'SalesDisValue' => isset($pro_discountArr[$i]) ? (float)$pro_discountArr[$i] : 0,
+                'SalesDisPercentage' => isset($pro_discount_precentArr[$i]) ? (float)$pro_discount_precentArr[$i] : 0,
+                'SalesIsVat' => isset($isVatArr[$i]) ? (int)$isVatArr[$i] : 0,
+                'SalesIsNbt' => isset($isNbtArr[$i]) ? (int)$isNbtArr[$i] : 0,
+                'SalesNbtRatio' => isset($nbtRatioArr[$i]) ? (float)$nbtRatioArr[$i] : 0,
+                'SalesVatAmount' => isset($proVatArr[$i]) ? (float)$proVatArr[$i] : 0,
+                'SalesNbtAmount' => isset($proNbtArr[$i]) ? (float)$proNbtArr[$i] : 0,
+                'SalesTotalAmount' => isset($totalAmountArr[$i]) ? (float)$totalAmountArr[$i] : 0,
+                'SalesInvNetAmount' => isset($total_netArr[$i]) ? (float)$total_netArr[$i] : 0,
+                'SalesPerson' => isset($salesPersonArr[$i]) ? $salesPersonArr[$i] : '',
+                'WarrantyMonthNew' => isset($warrantytypeArr[$i]) ? $warrantytypeArr[$i] : '',
+                'SellingPriceORG' => isset($orgSell_priceArr[$i]) ? (float)$orgSell_priceArr[$i] : 0,
+                'Is_Return' => isset($is_returnArr[$i]) ? (float)$is_returnArr[$i] : 0,
+                'ReturnType' => isset($return_typeArr[$i]) ? (float)$return_typeArr[$i] : 0
+            );
             $this->db->insert('salesinvoicedtl', $grnDtl);
+
             $sellPrice =0;
 
             if($sell_priceArr[$i]==0){
@@ -609,13 +658,23 @@ class Salesinvoice_model extends CI_Model {
             }else{
                 $sellPrice=$sell_priceArr[$i];
             }
-            //update stock
-             $this->db->query("CALL SPP_UPDATE_PRICE_STOCK('$product_codeArr[$i]','$qtyArr[$i]','$price_levelArr[$i]','$cost_priceArr[$i]','$sellPrice','$location','$serial_noArr[$i]','$freeQtyArr[$i]','0','0')");
 
-            //update serial stock
-            if($serial_noArr[$i]!=''){
-                 $this->db->update('productserialstock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=> $serial_noArr[$i]));
+            if($return_typeArr[$i] == 2){
+                 $this->db->update('productstock',array('Damage'=>$qtyArr[$i]),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location));
+                  $this->db->update('productstock',array('Damage'=>$qtyArr[$i]),array('ProductCode'=> $product_codeArr[$i],'Price'=> $sell_priceArr[$i],'Location'=> $location));
+            }elseif($return_typeArr[$i] == 3){
+                $this->db->update('productstock',array('Expired'=>$qtyArr[$i]),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location));
+                $this->db->update('productstock',array('Expired'=>$qtyArr[$i]),array('ProductCode'=> $product_codeArr[$i],'Price'=> $sell_priceArr[$i],'Location'=> $location));
+            }else{
+                 //update stock
+                $this->db->query("CALL SPP_UPDATE_PRICE_STOCK('$product_codeArr[$i]','$qtyArr[$i]','$price_levelArr[$i]','$cost_priceArr[$i]','$sellPrice','$location','$serial_noArr[$i]','$freeQtyArr[$i]','0','0')");
+
+                //update serial stock
+                if($serial_noArr[$i]!=''){
+                    $this->db->update('productserialstock',array('Quantity'=>0),array('ProductCode'=> $product_codeArr[$i],'Location'=> $location,'SerialNo'=> $serial_noArr[$i]));
+                }
             }
+           
         }
         
         $cashAmount = $_POST['cashAmount'];
@@ -812,7 +871,7 @@ class Salesinvoice_model extends CI_Model {
             'AppNo' => '1',
             'InvoiceNo'=>$grnNo,
             'EditType'=>1,
-            'Location'=>$location,
+            'Location'=>1,
             'UpdateDate'=>$updateTimestmp,
             'Remark'=>'Update',
             'UpdateUser'=>1);

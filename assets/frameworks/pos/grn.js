@@ -91,6 +91,7 @@ $(document).ready(function() {
     var maxSerialQty = 0;
     var serialAutoGen = 0;
     var maxSerialQty2=0;
+   
 //get auto serial max number
     $.ajax({
         type: "post",
@@ -131,6 +132,7 @@ $(document).ready(function() {
 
                     var resultData = JSON.parse(json);
                     if (resultData) {
+                        var wholesalePrice = resultData.productwhole?.ProductPrice ?? 0;
                         itemCode = resultData.product.ProductCode;
                         $.each(resultData.serial, function(key, value) {
                             var serialNoArrIndex2 = $.inArray(value, serialnoarr);
@@ -139,7 +141,10 @@ $(document).ready(function() {
                             }
                         });
                         autoSerial = resultData.product.IsRawMaterial;
-                        loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.product.ProductPrice, resultData.product.Prd_CostPrice, 0, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice, resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyPeriod, resultData.product.IsRawMaterial);
+                        loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.product.ProductPrice, 
+                            resultData.product.Prd_CostPrice, 0, resultData.product.IsSerial, resultData.product.IsFreeIssue, 
+                            resultData.product.IsOpenPrice, resultData.product.IsMultiPrice, resultData.product.Prd_UPC, 
+                            resultData.product.WarrantyPeriod, resultData.product.IsRawMaterial,wholesalePrice);
 
 //                        itemCode = resultData.ProductCode;
 //                        loadProModal(resultData.Prd_Description, resultData.ProductCode, resultData.ProductPrice, resultData.Prd_CostPrice, resultData.SerialNo, resultData.IsSerial, resultData.IsFreeIssue, resultData.IsOpenPrice, resultData.IsMultiPrice, resultData.Prd_UPC, resultData.WarrantyPeriod);
@@ -173,7 +178,7 @@ $(document).ready(function() {
     $("#itemCode").autocomplete({
         source: function(request, response) {
             $.ajax({
-                url: 'loadproductjson',
+                url: 'loadproductjsonGrn',
                 dataType: "json",
                 data: {
                     q: request.term,
@@ -203,7 +208,7 @@ $(document).ready(function() {
 //        alert(itemCode);
             $.ajax({
                 type: "post",
-                url: "../../admin/Product/getProductByIdforGrn",
+                url: "../../admin/Product/getProductByIdforGrnnew",
                 data: {proCode: itemCode, prlevel: price_level, location: loc},
                 success: function(json) {
                     var resultData = JSON.parse(json);
@@ -216,8 +221,12 @@ $(document).ready(function() {
                                 serialnoarr.push(value);
                             }
                         });
+                        var wholesalePrice = resultData.productwhole?.ProductPrice ?? 0;
                         autoSerial = resultData.product.IsRawMaterial;
-                        loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.product.ProductPrice, resultData.product.Prd_CostPrice, 0, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice, resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyPeriod, resultData.product.IsRawMaterial);
+                        loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.product.ProductPrice, 
+                            resultData.product.Prd_CostPrice, 0, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice, 
+                            resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyPeriod, resultData.product.IsRawMaterial,
+                        wholesalePrice);
                         //  loadProModal(resultData.Prd_Description, resultData.ProductCode, resultData.ProductPrice, resultData.Prd_CostPrice, 0, resultData.IsSerial, resultData.IsFreeIssue, resultData.IsOpenPrice, resultData.IsMultiPrice, resultData.Prd_UPC, resultData.WarrantyPeriod);
 
                     } else {
@@ -236,7 +245,7 @@ $(document).ready(function() {
     });
 
 //load model
-    function loadProModal(mname, mcode, msellPrice, mcostPrice, mserial, misSerial, misFree, isOP, isMP, upc, waranty, isautoSerial) {
+    function loadProModal(mname, mcode, msellPrice, mcostPrice, mserial, misSerial, misFree, isOP, isMP, upc, waranty, isautoSerial,wholesalePrice) {
 //        clearProModal();
         $("#qty").focus();
 //       alert(misSerial);
@@ -259,6 +268,7 @@ $(document).ready(function() {
         $("#unitcost").val(mcostPrice);
         $("#isSerial").val(misSerial);
         $("#upc").val(upc);
+        $("#wholesalesPrice").val(wholesalePrice);
 
         if (misSerial == 1) {
 
@@ -361,6 +371,7 @@ $(document).ready(function() {
         var freeQty = parseFloat($("#freeqty").val());
         var case1 = $("#mUnit option:selected").val();
         newSerialQty = parseFloat($("#serialQty").val());
+        wholesalesPrice = parseFloat($("#wholesalesPrice").val());
         maxSerialQty = qty;
         maxSerialQty2 = qty;
         if (is_serail == 1 && autoSerial == 0) {
@@ -376,7 +387,9 @@ $(document).ready(function() {
             qty = upc * qty;
             casecost = costPrice * qty;
         }
-        var itemCodeArrIndex = $.inArray(itemCode, itemcode);
+        // var itemCodeArrIndex = $.inArray(itemCode, itemcode);
+          var itemCodeSellingPrice = itemCode + '_' + sellingPrice;
+        var itemCodesellArrIndex = $.inArray(itemCodeSellingPrice, itemcode);
 
         if (itemCode == '' || itemCode == 0) {
             $("#errProduct").show();
@@ -405,10 +418,11 @@ $(document).ready(function() {
             return false;
         } else {
             if (is_serail == 0) {
-                if ((itemCodeArrIndex < 0 && is_serail == 0)) {
+                if ((itemCodesellArrIndex < 0 && is_serail == 0)) {
 
                     totalNet2 = (costPrice * qty);
-                    itemcode.push(itemCode);
+                    //itemcode.push(itemCode);
+                     itemcode.push(itemCodeSellingPrice);
                     total_amount2 += totalNet2;
                     totalCost += costPrice;
                     $("#totalWithOutDiscount").val(total_amount2);
@@ -421,8 +435,33 @@ $(document).ready(function() {
                         $("#serialQty").val(serialQty);
                     }
 
-                    $("#tbl_item tbody").append("<tr ri=" + i + " id=" + i + " proCode='" + itemCode + "' uc='" + unit + "' qty='" + qty + "' unit_price='" + sellingPrice + "' upc='" + upc + "' caseCost='" + casecost + "' isSerial='" + is_serail + "' serial='" + serialNo + "' discount_percent='" + discount_precent + "' cPrice='" + costPrice + "' pL='" + priceLevel + "' fQ='" + freeQty + "' nonDisTotalNet='" + totalNet2 + "' netAmount='" + totalNet + "' proDiscount='" + product_discount + "' proName='" + prdName + "'>\n\
-                <td class='text-center'>" + i + "</td><td class='text-left'>" + itemCode + "</td><td>" + prdName + "</td><td>" + unit + "</td><td class='qty" + i + "'>" + accounting.formatNumber(qty) + "</td><td class='text-right'>" + accounting.formatNumber(costPrice) + "</td><td class='text-center'>" + discount_precent + "</td><td class='text-right' >" + accounting.formatMoney(totalNet) + "</td><td>" + serialNo + "</td><td class='rem" + i + "'><a href='#' class='remove btn btn-xs btn-danger'><i class='fa fa-remove'></i></a></td></tr>");
+                    $("#tbl_item tbody").append("<tr ri=" + i + " id=" + i + " proCode='" + itemCode + 
+                        "' uc='" + unit + 
+                        "' qty='" + qty + 
+                        "' unit_price='" + sellingPrice + 
+                        "' upc='" + upc + 
+                        "' caseCost='" + casecost + 
+                        "' isSerial='" + is_serail + 
+                        "' serial='" + serialNo + 
+                        "' discount_percent='" + discount_precent + 
+                        "' cPrice='" + costPrice + 
+                        "' pL='" + priceLevel + 
+                        "' fQ='" + freeQty + 
+                        "' nonDisTotalNet='" + totalNet2 + 
+                        "' netAmount='" + totalNet + 
+                        "' proDiscount='" + product_discount + 
+                        "' wholesalesPrice='" + wholesalesPrice + 
+                        "' proName='" + prdName + "'>\n\
+                <td class='text-center'>" + i + "</td><td class='text-left'>" + itemCode + "</td><td>" + prdName + 
+                "</td><td>" + unit + 
+                "</td><td class='qty" + i + "'>" + accounting.formatNumber(qty) + 
+                "</td><td class='fQ" + i + "'>" + accounting.formatNumber(freeQty) + 
+                "</td><td class='text-right'>" + accounting.formatNumber(costPrice) + 
+                "</td><td class='text-center'>" + discount_precent + 
+                "</td><td class='text-right' >" + accounting.formatMoney(totalNet) + 
+                "</td><td class='text-right' >" + accounting.formatMoney(wholesalesPrice) + 
+                "</td><td>" + serialNo + 
+                "</td><td class='rem" + i + "'><a href='#' class='remove btn btn-xs btn-danger'><i class='fa fa-remove'></i></a></td></tr>");
 
                     if (is_serail != 1) {
                         clear_gem_data();
@@ -455,7 +494,8 @@ $(document).ready(function() {
                         sinput++;
                         serialNo = strPad(sinput, 8, '', 0);
                         totalNet2 = (costPrice * qty);
-                        itemcode.push(itemCode);
+                        //itemcode.push(itemCode);
+                        itemcode.push(itemCodeSellingPrice);
                         serialnoarr.push(serialNo);
                         total_amount2 += totalNet2;
                         totalCost += costPrice;
@@ -469,8 +509,33 @@ $(document).ready(function() {
                             $("#serialQty").val(serialQty);
                         }
 
-                        $("#tbl_item tbody").append("<tr ri=" + i + " id=" + i + " proCode='" + itemCode + "' uc='" + unit + "' qty='" + qty + "' unit_price='" + sellingPrice + "' upc='" + upc + "' caseCost='" + casecost + "' isSerial='" + is_serail + "' serial='" + serialNo + "' discount_percent='" + discount_precent + "' cPrice='" + costPrice + "' pL='" + priceLevel + "' fQ='" + freeQty + "' nonDisTotalNet='" + totalNet2 + "' netAmount='" + totalNet + "' proDiscount='" + product_discount + "' proName='" + prdName + "'>\n\
-                        <td class='text-center'>" + i + "</td><td class='text-left'>" + itemCode + "</td><td>" + prdName + "</td><td>" + unit + "</td><td class='qty" + i + "'>" + accounting.formatNumber(qty) + "</td><td class='text-right'>" + accounting.formatNumber(costPrice) + "</td><td class='text-center'>" + discount_precent + "</td><td class='text-right' >" + accounting.formatMoney(totalNet) + "</td><td>" + serialNo + "</td><td class='rem" + i + "'><a href='#' class='remove btn btn-xs btn-danger'><i class='fa fa-remove'></i></a></td></tr>");
+                        $("#tbl_item tbody").append("<tr ri=" + i + " id=" + i + " proCode='" + itemCode + 
+                            "' uc='" + unit + 
+                            "' qty='" + qty + 
+                            "' unit_price='" + sellingPrice + 
+                            "' upc='" + upc + 
+                            "' caseCost='" + casecost + 
+                            "' isSerial='" + is_serail + 
+                            "' serial='" + serialNo + 
+                            "' discount_percent='" + discount_precent + 
+                            "' cPrice='" + costPrice + 
+                            "' pL='" + priceLevel + 
+                            "' fQ='" + freeQty + 
+                            "' nonDisTotalNet='" + totalNet2 + 
+                            "' netAmount='" + totalNet + 
+                            "' proDiscount='" + product_discount + 
+                            "' proDiscount='" + wholesalesPrice + 
+                            "' proName='" + prdName + "'>\n\
+                        <td class='text-center'>" + i + "</td><td class='text-left'>" + itemCode + 
+                        "</td><td>" + prdName + 
+                        "</td><td>" + unit + 
+                        "</td><td class='qty" + i + "'>" + accounting.formatNumber(qty) + 
+                        "</td><td class='fQ" + i + "'>" + accounting.formatNumber(freeQty) + 
+                        "</td><td class='text-right'>" + accounting.formatNumber(costPrice) + 
+                        "</td><td class='text-center'>" + discount_precent + 
+                        "</td><td class='text-right' >" + accounting.formatMoney(totalNet) + 
+                        "</td><td class='text-right' >" + accounting.formatMoney(wholesalesPrice) + 
+                        "</td><td>" + serialNo + "</td><td class='rem" + i + "'><a href='#' class='remove btn btn-xs btn-danger'><i class='fa fa-remove'></i></a></td></tr>");
 
                         if (is_serail != 1) {
                             clear_gem_data();
@@ -500,10 +565,11 @@ $(document).ready(function() {
                         $("#serialNo").val('');
                         return false;
                     }
-                    else if (((itemCodeArrIndex >= 0 && is_serail == 1) || (itemCodeArrIndex < 0 && is_serail == 1))) {
+                    else if (((itemCodesellArrIndex >= 0 && is_serail == 1) || (itemCodesellArrIndex < 0 && is_serail == 1))) {
 
                         totalNet2 = (costPrice * qty);
-                        itemcode.push(itemCode);
+                        //itemcode.push(itemCode);
+                        itemcode.push(itemCodeSellingPrice);
                         serialnoarr.push(serialNo);
                         total_amount2 += totalNet2;
                         totalCost += costPrice;
@@ -517,8 +583,33 @@ $(document).ready(function() {
                             $("#serialQty").val(serialQty);
                         }
 
-                        $("#tbl_item tbody").append("<tr ri=" + i + " id=" + i + " proCode='" + itemCode + "' uc='" + unit + "' qty='" + qty + "' unit_price='" + sellingPrice + "' upc='" + upc + "' caseCost='" + casecost + "' isSerial='" + is_serail + "' serial='" + serialNo + "' discount_percent='" + discount_precent + "' cPrice='" + costPrice + "' pL='" + priceLevel + "' fQ='" + freeQty + "' nonDisTotalNet='" + totalNet2 + "' netAmount='" + totalNet + "' proDiscount='" + product_discount + "' proName='" + prdName + "'>\n\
-                <td class='text-center'>" + i + "</td><td class='text-left'>" + itemCode + "</td><td>" + prdName + "</td><td>" + unit + "</td><td class='qty" + i + "'>" + accounting.formatNumber(qty) + "</td><td class='text-right'>" + accounting.formatNumber(costPrice) + "</td><td class='text-center'>" + discount_precent + "</td><td class='text-right' >" + accounting.formatMoney(totalNet) + "</td><td>" + serialNo + "</td><td class='rem" + i + "'><a href='#' class='remove btn btn-xs btn-danger'><i class='fa fa-remove'></i></a></td></tr>");
+                        $("#tbl_item tbody").append("<tr ri=" + i + " id=" + i + " proCode='" + itemCode + 
+                            "' uc='" + unit + 
+                            "' qty='" + qty + 
+                            "' unit_price='" + sellingPrice + 
+                            "' upc='" + upc + 
+                            "' caseCost='" + casecost + 
+                            "' isSerial='" + is_serail + 
+                            "' serial='" + serialNo + 
+                            "' discount_percent='" + discount_precent + 
+                            "' cPrice='" + costPrice + 
+                            "' pL='" + priceLevel + 
+                            "' fQ='" + freeQty + 
+                            "' nonDisTotalNet='" + totalNet2 + 
+                            "' netAmount='" + totalNet + 
+                            "' proDiscount='" + product_discount + 
+                             "' proDiscount='" + wholesalesPrice + 
+                            "' proName='" + prdName + "'>\n\
+                <td class='text-center'>" + i + "</td><td class='text-left'>" + itemCode + 
+                "</td><td>" + prdName + 
+                "</td><td>" + unit + 
+                "</td><td class='qty" + i + "'>" + accounting.formatNumber(qty) + 
+                "</td><td class='fQ" + i + "'>" + accounting.formatNumber(freeQty) + 
+                "</td><td class='text-right'>" + accounting.formatNumber(costPrice) + 
+                "</td><td class='text-center'>" + discount_precent + 
+                "</td><td class='text-right' >" + accounting.formatMoney(totalNet) + 
+                 "</td><td class='text-right' >" + accounting.formatMoney(wholesalesPrice) + 
+                "</td><td>" + serialNo + "</td><td class='rem" + i + "'><a href='#' class='remove btn btn-xs btn-danger'><i class='fa fa-remove'></i></a></td></tr>");
 
                         if (is_serail != 1) {
                             clear_gem_data();
@@ -631,6 +722,7 @@ $(document).ready(function() {
         var fee_qty = new Array();
         var cost_price = new Array();
         var pro_total = new Array();
+        var wholesales_price = new Array();
 
         var grnDate = $("#grnDate").val();
         var invUser = $("#invUser").val();
@@ -658,6 +750,7 @@ $(document).ready(function() {
             pro_total.push($(this).attr("nonDisTotalNet"));
             isSerial.push($(this).attr("isSerial"));
             pro_name.push($(this).attr("proName"));
+            wholesales_price.push($(this).attr("wholesalesPrice"));
         });
 
         var sendProduct_code = JSON.stringify(product_code);
@@ -676,7 +769,7 @@ $(document).ready(function() {
         var sendCaseCost = JSON.stringify(caseCost);
         var sendPro_total = JSON.stringify(pro_total);
         var sendIsSerial = JSON.stringify(isSerial);
-
+        var sendwholesales_price = JSON.stringify(wholesales_price);
 
         var r = confirm("Do you want to save this GRN.?");
         if (r == true) {
@@ -702,7 +795,8 @@ $(document).ready(function() {
                     data: {invoicenumber: invoicenumber, additional: additional, grnremark: grnremark, product_code: sendProduct_code, serial_no: sendSerial_no, qty: sendQty, unit_price: sendUnit_price,
                         discount_precent: sendDiscount_precent, pro_discount: sendPro_discount, total_net: sendTotal_net, unit_type: sendUnit_type, price_level: sendPrice_level, upc: sendUpc,
                         case_cost: sendCaseCost, freeQty: sendFree_qty, cost_price: sendCost_price, pro_total: sendPro_total, isSerial: sendIsSerial, proName: sendPro_name, total_cost: totalCost, totalProDiscount: totalProWiseDiscount, totalGrnDiscount: totalGrnDiscount,
-                        grnDate: grnDate, invUser: invUser, total_amount: total_amount, total_discount: total_discount, total_net_amount: totalNetAmount, location: location, supcode: supcode, maxSerialQty: maxSerialQty, serialAutoGen: serialAutoGen},
+                        grnDate: grnDate, invUser: invUser, total_amount: total_amount, total_discount: total_discount, total_net_amount: totalNetAmount, location: location, supcode: supcode, 
+                        maxSerialQty: maxSerialQty, serialAutoGen: serialAutoGen,wholesales_price:sendwholesales_price},
                     success: function(data) {
                         var resultData = JSON.parse(data);
                         var feedback = resultData['fb'];
@@ -998,6 +1092,7 @@ $(document).ready(function() {
         $("#remark").val('');
         $("#guessAmount").val(0);
         $("#qty").val(0);
+        $("#freeqty").val(0);
         $("#cutWeight").val(0);
         $("#polishWeight").val(0);
         $("#totalNet").val(0);
@@ -1009,6 +1104,7 @@ $(document).ready(function() {
         $('.rank').val(0);
         $("#disPercent").val(0);
         $("#disAmount").val(0);
+        $("#wholesalesPrice").val(0);
 
         $("#totalAmount").html(accounting.formatMoney(total_amount));
         $("#netAmount").html(accounting.formatMoney(totalNetAmount));
