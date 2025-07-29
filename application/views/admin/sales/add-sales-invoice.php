@@ -44,12 +44,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <div class="form-group">
                                     <label class="col-sm-4 control-label">Price Level</label>
                                     <div class="col-sm-7">
-                                            <select tabindex="7" class="form-control" id="priceLevel"> 
-                                                <?php foreach ($plv as $pl) {
-                                                    if ($pl->PL_No == 1) { ?>
-                                                        <option value="<?php echo $pl->PL_No; ?>" selected><?php echo $pl->PriceLevel; ?></option>
-                                                <?php } } ?>
-                                            </select>
+                                        <select tabindex="7" class="form-control" id="priceLevel">
+                                         <?php foreach ($plv as $pl) { ?>
+                                        <option value="<?php echo $pl->PL_No; ?>" <?php if ($pl->PL_No == 1) {echo 'selected';}?>><?php echo $pl->PriceLevel; ?></option>
+                                        <?php } ?></select>
                                     </div>
                                 </div>
                                 <div class="form-group">

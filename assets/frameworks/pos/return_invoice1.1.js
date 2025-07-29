@@ -497,7 +497,7 @@ var invPrice=0;
         source: function(request, response) {
 
             $.ajax({
-                url: 'loadproductjson',
+                url: 'loadproductjsonreturn',
                 dataType: "json",
                 data: {
                     q: request.term,
@@ -528,12 +528,12 @@ var invPrice=0;
             var proname = ui.item.name;
             var serial = ui.item.serial;
             minQty = ui.item.qty;
-             invPrice = ui.item.price;
+             price = ui.item.price;
 
                 $.ajax({
                     type: "post",
-                    url: "../../admin/Product/getProductByIdforGrn",
-                    data: {proCode: itemCode, prlevel: price_level, location: loc},
+                    url: "../../admin/Product/getProductByIdforSTO",
+                    data: {proCode: itemCode, prlevel: price_level, location: loc,price:price},
                     success: function(json) {
                         var resultData = JSON.parse(json);
                         if (resultData) {
@@ -544,6 +544,15 @@ var invPrice=0;
                                     serialnoarr.push(value);
                                 }
                             });
+
+                            if (price_level == 1) {
+                                priceValue = resultData.price_stock.Price;
+                            }
+
+                            
+                            if (price_level == 2) {
+                                priceValue = resultData.price_stock.WholesalesPrice;
+                            }
 
                             loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.product.ProductPrice, resultData.product.Prd_CostPrice, 0, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice, resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyPeriod);
 

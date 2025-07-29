@@ -54,22 +54,23 @@ class Grn_model extends CI_Model {
 
      public function loadproductjson($query,$sup,$supCode,$pLevel) {
             if($sup!=0){
-                $query1 =$this->db->select('product.ProductCode,product.Prd_Description,pricestock.Price,pricestock.Stock')
+                $query1 =$this->db->select('product.ProductCode,product.Prd_Description,pricestock.Price,pricestock.Stock,productprice.PL_No')
                         ->from('product')
-                        //->join('productprice', 'productprice.ProductCode = product.ProductCode', 'INNER')
+                        ->join('productprice', 'productprice.ProductCode = product.ProductCode', 'INNER')
                         ->join(' pricestock', 'pricestock.PSCode = product.ProductCode', 'INNER')
                         ->where('product.Prd_Supplier', $supCode)
-                        ->where('pricestock.PSPriceLevel', $pLevel)
+                        ->where('productprice.PL_No', $pLevel)
                         ->like("CONCAT(' ',product.ProductCode,product.Prd_Description,product.BarCode)", $query ,'left')
                         ->where('pricestock.Stock !=', 0)
                         ->limit(50)->get();
         
             }else{
+                
                 $query1 =$this->db->select('product.ProductCode,product.Prd_Description,pricestock.Price,pricestock.Stock')
                 ->from('product')
-                //->join('productprice', 'productprice.ProductCode = product.ProductCode', 'INNER')
+                ->join('productprice', 'productprice.ProductCode = product.ProductCode', 'INNER')
                 ->join(' pricestock', 'pricestock.PSCode = product.ProductCode', 'INNER')
-                ->where('pricestock.PSPriceLevel', $pLevel)
+                ->where('productprice.PL_No', $pLevel)
                 ->like("CONCAT(' ',product.ProductCode,product.Prd_Description,product.BarCode)", $query ,'left')
                 ->where('pricestock.Stock !=', 0)
                 ->limit(50)->get();

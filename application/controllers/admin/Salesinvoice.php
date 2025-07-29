@@ -893,7 +893,8 @@ class Salesinvoice extends Admin_Controller {
     public function loadproductjson() {
         
         $query = $_GET['q'];
-        $sup= 0;$supCode= '';
+        $sup= 0;
+        $supCode= '';
         $pl = $_GET['price_level'];
          $this->load->model('admin/Grn_model');
         echo $this->Grn_model->loadproductjson($query,$sup,$supCode,$pl);

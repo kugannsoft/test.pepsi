@@ -733,7 +733,11 @@ $(document).ready(function() {
                         // loadVATNBT(isJobVat,isJobNbt,isJobNbtRatio);
                         loadVATNBT(resultData.product.IsTax,resultData.product.IsNbt,resultData.product.NbtRatio);
                         //loadVATNBT(resultData.product.IsTax,resultData.product.IsNbt,resultData.product.NbtRatio);
-                        loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, resultData.price_stock.Price, resultData.product.Prd_CostPrice,
+                       let priceValue = resultData.price_stock.Price; 
+                        if (price_level == 2) {
+                            priceValue = resultData.price_stock.WholesalesPrice;
+                        }
+                        loadProModal(resultData.product.Prd_Description, resultData.product.ProductCode, priceValue, resultData.product.Prd_CostPrice,
                              0, resultData.product.IsSerial, resultData.product.IsFreeIssue, resultData.product.IsOpenPrice,
                               resultData.product.IsMultiPrice, resultData.product.Prd_UPC, resultData.product.WarrantyPeriod,
                                resultData.product.IsRawMaterial,resultData.product.UOM_Name, resultData.product.ProductVatPrice,resultData.product.DiscountLimit);
@@ -1345,9 +1349,9 @@ $(document).ready(function() {
                         sellingPrice = vatSellingPrice;
                     }
 
-                    if(itemCode!=customProCode){
-                        itemcode.push(itemCode);
-                    }
+                    // if(itemCode!=customProCode){
+                    //     itemcode.push(itemCode);
+                    // }
 
                     itemcode.push(itemCodeSellingPrice);
 
@@ -1463,7 +1467,8 @@ $(document).ready(function() {
                         totalNet2 = (vatSellingPrice * qty);
                         sellingPrice = vatSellingPrice;
                     }
-                    itemcode.push(itemCode);
+                     itemcode.push(itemCodeSellingPrice);
+                    // itemcode.push(itemCode);
                     serialnoarr.push(serialNo);
                     total_amount2 += totalNet2;
                     totalCost += (costPrice * qty);
@@ -2202,6 +2207,7 @@ $(document).ready(function() {
         $("#warrantytype").val('');
         $("#upm").html('');
         $("#proStock").html('');
+        $("#priceStock").html('');
         $("#productName").html('');
         $("#returntype").val(0);
         $("#returnsection").hide();
