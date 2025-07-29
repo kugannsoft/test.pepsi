@@ -77,7 +77,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         <th>#</th>
                                         <th>Product Code</th>
                                         <th>Product Name</th>
-                                        <th>Serial No</th>
+
                                         <th>Total Quantity</th>
                                         <th>Free Qty</th>
                                         <th>Selling Price</th>

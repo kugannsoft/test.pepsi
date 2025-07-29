@@ -80,10 +80,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <td>Product Code</td>
                                     <td>Product Name</td>
                                     <td>Location</td>
-                                    <td>Stock</td>
                                     <td>Cost Price</td>
                                     <td>Price</td>
                                     <td>Supplier</td>
+                                    <td>Stock</td>
+                                    <td>Damage</td>
+                                    <td>Expired</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -212,7 +214,7 @@ $("#supplier").select2({
         e.preventDefault();
         $.ajax({
             type: 'POST',
-            url: "loadreport5",
+            url: "loadreport3",
             data: $(this).serialize(),
             success: function (data) {
                 $('#saletable tbody').empty();
@@ -240,10 +242,12 @@ $("#supplier").select2({
         row.append($("<td>" + rowData[index].ProductCode + "</td>"));
         row.append($("<td>" + rowData[index].Prd_Description + "</td>"));
         row.append($("<td>" + rowData[index].location + "</td>"));
-        row.append($("<td>" + rowData[index].Stock + "</td>"));
         row.append($("<td>" + rowData[index].Prd_CostPrice + "</td>"));
         row.append($("<td>" + rowData[index].Price + "</td>"));
         row.append($("<td>" + rowData[index].SupName + "</td>"));
+        row.append($("<td>" + rowData[index].Stock + "</td>"));
+        row.append($("<td>" + rowData[index].Damage + "</td>"));
+        row.append($("<td>" + rowData[index].Expired + "</td>"));
 
     }
     function printdiv() {

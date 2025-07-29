@@ -60,8 +60,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <td>Product Name</td>
                                 <td>Qty</td>
                                 <td>free qty</td>
+                                <td>Return Qty</td>
+
                                 <td> Total Qty Amount</td>
-                                <td>Total free qty Amount</td>
+
                             </tr>
                             </thead>
                             <tbody>
@@ -73,6 +75,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <th></th>
                                 <th></th>
                                 <th></th>
+
                             </tfoot>
                         </table>
                     </div>
@@ -147,8 +150,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         <td>${item.SalesProductName}</td>
                                         <td>${item.TotalSalesQty}</td>
                                         <td>${item.TotalSalesFreeQty}</td>
-                                        <td>${item.Prd_CostPrice*item.TotalSalesQty}</td>
-                                        <td>${item.Prd_CostPrice*item.TotalSalesFreeQty}</td>
+                                         <td>${item.SalesReturnQty}</td>
+
+                                        <td>${(item.Prd_CostPrice * item.TotalSalesQty).toFixed(2)}</td>
+
+
                                     </tr>
                                 `);
                             })

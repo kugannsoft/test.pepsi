@@ -15,7 +15,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="col-md-12">
                 <div class="box box-default">
                     <div class="box-body">
-                        <div class="row">
+
                             <form id="filterform">
                                 <div class="row">
                                 <div class="col-md-3">
@@ -62,7 +62,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 </div>
                             </form>
 
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -72,14 +72,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <div class="box" id="report">
                 <div class="row">
                     <div class="col-md-1">&nbsp;</div>
-                    <div class="col-md-10">
-                        <span class="pull-right" id="dtstart"></span><br>
-                        <span class="pull-right" id="dtend"></span><br>
-                        <span class="pull-right" id="a">DATE : <?php echo date('Y-m-d');?></span><br>
+                    <div class="col-md-10">To:<span class="pull-right" id="a">DATE : <?php echo date('Y-m-d');?></span><br>
                         <span id="cusName"></span><br>
                         <span id="address1"></span>
-                        <span id="address2"></span>
-                    </div>
+                        <span id="address2"></span></div>
+                    <!-- <div class="col-md-5">DATE : <?php echo date('Y-m-d');?></div> -->
+                    <div class="col-md-1">&nbsp;</div>
                     <!-- <div class="col-md-5">DATE : <?php echo date('Y-m-d');?></div> -->
                      <div class="col-md-1">&nbsp;</div>
                      </div>
@@ -87,7 +85,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <div class="box-body table-responsive">
                         <table id="saletable" class="table table-bordered">
                             <thead>
-                                <tr>
+                            <tr style="background-color: #1fbfb8">
                                     <!-- <td>Date</td> -->
                                     <td>Customer </td>
                                     <td>Phone No</td>
@@ -107,6 +105,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <tbody>
                             </tbody>
                             <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+
+                                <th id="totalcred" style="text-align: right;color: #00aaf1;"></th>
+                                <th id="totalset" style="text-align: right;color: #00aaf1;"></th>
+                                <th id="totalret" style="text-align: right;color: #00aaf1;"></th>
+                                <th id="totalout" style="text-align: right;color: #00aaf1;"></th>
+
+                            </tr>
                                 <tr>
                                     <!-- <th></th>
                                     <th></th>-->
@@ -114,8 +123,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <th></th>
                                     <th></th>
                                     <th></th>
-                                    <th  colspan="2" style="text-align: right;">Total Outstanding</th>
-                                    <th id="totalpr" style="text-align: right;color: #00aaf1;"></th>
+                                    <th  colspan="3" style="text-align: right;">Total Outstanding</th>
+                                    <th id="totalpr" style="text-align: right;color: #f00;"></th>
                                     <!-- <th id="nprofit" style="text-align: right;color: #00aaf1;"></th> -->
                                 </tr>
                                 
@@ -225,6 +234,10 @@ $("input[name='isall']").on('ifChanged', function(event){
                     }
                     $('#dtstart').html("From : "+$("input[name='startdate']").val());
                     $('#dtend').html("To : "+$("input[name='enddate']").val());
+                    $('#totalcred').html(accounting.formatMoney(sumcolumn('costamount')));
+                    $('#totalset').html(accounting.formatMoney(sumcolumn('totalamount')));
+                    $('#totalret').html(accounting.formatMoney(sumcolumn('totalreturn')));
+                    $('#totalout').html(accounting.formatMoney(sumcolumn('profit')));
                     $('#totalpr').html(accounting.formatMoney(sumcolumn('profit')));
                 }
             }

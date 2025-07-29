@@ -131,6 +131,7 @@ class Job_model extends CI_Model {
         return json_encode($q);
     }
 
+
     public function getCustomersDataById($cusCode) {
         $data= $this->db->select('customer.*,customeroutstanding.*,paytype.payType')->from('customer')
                         ->where('customer.CusCode', $cusCode)

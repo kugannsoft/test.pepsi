@@ -657,6 +657,17 @@ class Job extends Admin_Controller {
         }
     }
 
+    public function findroutecustomer() {
+        $routeID = $this->input->post('routeID');
+        $salespersonID = $this->input->post('salespersonID');
+
+        $this->load->model('Customer_model');
+        $customers = $this->Customer_model->getCustomersByRouteAndSalesperson($routeID, $salespersonID);
+
+        echo json_encode($customers);
+    }
+
+
     public function cancel_job($jno=null) {
         if (!$this->ion_auth->logged_in() OR !$this->ion_auth->is_admin()) {
             redirect('auth/login', 'refresh');
@@ -692,29 +703,28 @@ class Job extends Admin_Controller {
 
     public function loadcustomersjson() {
         $query = $_GET['q'];
-        $routeID = isset($_GET['routeID']) ? $_GET['routeID'] : null;
-        echo jason_encode($routeID);
-        die;
-        echo $this->Job_model->loadcustomersjson($query,$routeID); die;
+
+        echo $this->Job_model->loadcustomersjson($query); die;
     }
 
     public function loadcustomersroutewise() {
-        $routeID = $this->input->post('routeID'); 
+        $routeID = $this->input->post('routeID');
         $newsalesperson = $this->input->post('newsalesperson');
         $this->load->database();
-    
-    
+
+
         $customers = $this->db->select('customer.CusCode,customer.DisplayName')
-        ->from('customer')
-        ->where('RouteId', $routeID)
-        ->where('HandelBy',$newsalesperson)
-        ->get()
-        ->result();
-    
-        echo json_encode($customers); 
-        die; 
+            ->from('customer')
+            ->where('RouteId', $routeID)
+            ->where('HandelBy',$newsalesperson)
+            ->get()
+            ->result();
+
+        echo json_encode($customers);
+        die;
     }
-    
+
+
 
     public function loadjobjson() {
         $query = $_GET['q'];
