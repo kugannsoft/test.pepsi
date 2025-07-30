@@ -556,7 +556,24 @@ class Salesinvoice extends Admin_Controller {
             }
             $cusCode =  $this->db->select('SalesCustomer')->from('salesinvoicehed')->where('SalesInvNo',$invNo)->get()->row()->SalesCustomer;
             $regNo =  $this->db->select('SalesVehicle')->from('salesinvoicehed')->where('SalesInvNo',$invNo)->get()->row()->SalesVehicle;
-                
+            
+            $this->data['creditInvoiceList'] = $this->db->select('*')
+            ->from('creditinvoicedetails')
+            ->where('CusCode', $cusCode)
+            ->where('IsCancel', 0)
+            ->where('creditinvoicedetails.InvoiceNo <', $invNo) 
+            ->order_by('InvoiceDate', 'DESC')
+            ->get()
+            ->result();
+
+        
+        $this->data['cusOutstanding'] = $this->db->select('*')
+            ->from('customeroutstanding')
+            ->where('CusCode', $cusCode)
+            ->get()
+            ->row();
+
+
             $this->data['invCus']= $this->db->select('customer.*')->from('customer')->where('customer.CusCode',$cusCode)->get()->row();
             $this->data['invVehi']= $this->db->select('vehicledetail.ChassisNo,vehicledetail.contactName,make.make,model.model')->from('vehicledetail')->join('make','make.make_id=vehicledetail.Make','left')->join('model','model.model_id=vehicledetail.Model','left')->where('CusCode',$cusCode)->where('vehicledetail.RegNo',$regNo)->get()->row();
 
