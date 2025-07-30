@@ -216,9 +216,9 @@ class Invoice_model extends CI_Model {
                 }
                 $new_row['price'] = htmlentities(stripslashes($row['ProductPrice']));
                 $new_row['name'] = htmlentities(stripslashes($row['Prd_Description']));
-                $row_set[] = $new_row; //build an array
+                $row_set[] = $new_row; 
             }
-            echo json_encode($row_set); //format the array into json data
+            echo json_encode($row_set); 
         }
     }
 
@@ -252,9 +252,9 @@ class Invoice_model extends CI_Model {
                 }
                 $new_row['price'] = htmlentities(stripslashes($row['Price']));
                 $new_row['name'] = htmlentities(stripslashes($row['Prd_Description']));
-                $row_set[] = $new_row; //build an array
+                $row_set[] = $new_row; 
             }
-            echo json_encode($row_set); //format the array into json data
+            echo json_encode($row_set); 
         }
     }
 
