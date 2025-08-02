@@ -1892,7 +1892,6 @@ $(document).ready(function() {
         var warrantytypeArr = JSON.stringify(warrantytype);
         var is_returnArr = JSON.stringify(is_return);
         var return_typeArr = JSON.stringify(return_type);
-        alert(sendFree_qty);
 
 
         var r = confirm("Do you want to save this invoice.?");
