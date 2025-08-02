@@ -28,6 +28,9 @@ class Report extends Admin_Controller
         $this->data['pagetitle'] = $this->page_title->show();
         $this->data['breadcrumb'] = $this->breadcrumbs->show();
         $this->data['locations'] = $this->Report_model->loadroot();
+        $this->data['salespersons'] = $this->Report_model->loademployee();
+        $this->data['RouteId'] = $this->Report_model->loadroute();
+
         $this->data['staff'] = $this->db->select()->from('salespersons')->where('RepType', 6)->get()->result();
         $people = array("0", "10", "13");
 
@@ -755,20 +758,36 @@ class Report extends Admin_Controller
     }
 
 //    services------------------------------------------------------------------
-    public function loadreport1()
-    {
-        $this->output->set_content_type('application_json');
-        $enddate = $_POST['enddate'];
-        $startdate = $_POST['startdate'];
-        $route = $_POST['RouteId'];
-        $invtype = isset($_POST['inv_type']) ? $_POST['inv_type'] : 0;
-//        $location = isset($_POST['route']) ? $_POST['route'] : NULL;
-        $salesperson = isset($_POST['salesperson']) ? $_POST['salesperson'] : 0;
-//        $locationAr = isset($_POST['route_ar']) ? json_decode($_POST['route_ar']) : NULL;
-        $result = $this->Report_model->gensalesreportbyroute($startdate, $enddate, $location,$route, $locationAr, $invtype, $salesperson);
-        echo json_encode($result);
-        die;
-    }
+
+
+public function loadreport1() {
+    $this->output->set_content_type('application/json');
+
+    $startdate = $_POST['startdate'];
+    $enddate = $_POST['enddate'];
+    $invtype = isset($_POST['inv_type']) ? $_POST['inv_type'] : 0;
+    $route = isset($_POST['route']) ? $_POST['route'] : NULL;
+    $salesperson = isset($_POST['salesperson']) ? $_POST['salesperson'] : 0;
+    $customer = isset($_POST['customer']) ? $_POST['customer'] : NULL;
+    $routeAr = isset($_POST['route_ar']) ? json_decode($_POST['route_ar']) : NULL;
+
+    $result = $this->Report_model->gensalesreportbyroute(
+        $startdate,
+        $enddate,
+        $invtype,
+        $route,         
+        $routeAr,       
+        $salesperson,
+        $route,
+        $customer
+    );
+
+    echo json_encode($result);
+    die;
+}
+
+
+
 
     public function loadorederdataby()
     {
