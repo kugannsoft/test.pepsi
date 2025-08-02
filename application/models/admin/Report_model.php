@@ -102,7 +102,8 @@ class Report_model extends CI_Model {
         return $this->db->get()->result();
     }
 
-    public function gensalesreportbyroute($startdate, $enddate, $location = NULL,$locationAr = NULL,$invtype,$salesperson= NULL) {
+ 
+    public function gensalesreportbyroute($startdate, $enddate, $location = NULL,$locationAr = NULL,$invtype,$salesperson= NULL,$routeAr,$customer) {
         if (isset($location) && $location != '') {
             $this->db->select('customer.CusCode,customer.MobileNo,DATE(salesinvoicehed.SalesDate) As InvDate,(salesinvoicehed.SalesDisAmount) AS DisAmount,salesinvoicehed.SalesInvNo,
                                 (salesinvoicehed.SalesCashAmount) AS CashAmount,
@@ -120,6 +121,9 @@ class Report_model extends CI_Model {
                                 (salesinvoicehed.SalesCustomerPayment) AS CustomerPayment,
                                 (salesinvoicehed.SalesCostAmount) AS CostAmount,
                                 (salesinvoicehed.SalesReturnAmount) AS ReturnAmount,customer.CusName,
+                                salesinvoicehed.SalesPerson,
+                                salesinvoicehed.RouteId,
+                                salesinvoicehed.SalesCustomer,
                                 customer.RespectSign,creditinvoicedetails.SettledAmount');
             $this->db->from('salesinvoicehed');
             $this->db->join('customer', 'customer.CusCode = salesinvoicehed.SalesCustomer', 'INNER');
@@ -128,6 +132,7 @@ class Report_model extends CI_Model {
             $this->db->where('DATE(salesinvoicehed.SalesDate) <=', $enddate);
             $this->db->where('DATE(salesinvoicehed.SalesDate) >=', $startdate);
             $this->db->where_in('salesinvoicehed.SalesLocation', $locationAr);
+            
             $this->db->where('salesinvoicehed.InvIsCancel', 0);
             if (isset($invtype) && $invtype != '') {
                 $this->db->where('salesinvoicehed.SalesInvType', $invtype);
@@ -135,6 +140,14 @@ class Report_model extends CI_Model {
             
             if (isset($salesperson) && $salesperson != '') {
                 $this->db->where('salesinvoicehed.SalesPerson', $salesperson);
+            }
+
+            if (isset($route) && $route != '') {
+                $this->db->where('salesinvoicehed.RouteId', $route);
+            }
+
+            if (isset($customer) && $customer != '') {
+                $this->db->where('salesinvoicehed.SalesCustomer', $customer);
             }
 
             // $this->db->group_by('DATE(SalesInvNo)');
@@ -157,6 +170,9 @@ class Report_model extends CI_Model {
                                 (salesinvoicehed.SalesCustomerPayment) AS CustomerPayment,
                                 (salesinvoicehed.SalesCostAmount) AS CostAmount,
                                 (salesinvoicehed.SalesReturnAmount) AS ReturnAmount,customer.CusName,
+                                salesinvoicehed.SalesPerson,
+                                salesinvoicehed.RouteId,
+                                salesinvoicehed.SalesCustomer,
                                 customer.RespectSign,creditinvoicedetails.SettledAmount');
             $this->db->from('salesinvoicehed');
             $this->db->join('customer', 'customer.CusCode = salesinvoicehed.SalesCustomer', 'INNER');
@@ -172,7 +188,14 @@ class Report_model extends CI_Model {
             if (isset($salesperson) && $salesperson != '') {
                 $this->db->where('salesinvoicehed.SalesPerson', $salesperson);
             }
+
+            if (isset($route) && $route != '') {
+                $this->db->where('salesinvoicehed.RouteId', $route);
+            }
             
+            if (isset($customer) && $customer != '') {
+                $this->db->where('salesinvoicehed.SalesCustomer', $customer);
+            }
             
              $this->db->order_by('salesinvoicehed.SalesDate', 'DESC');
             // $this->db->group_by('salesinvoicehed.SalesInvNo');

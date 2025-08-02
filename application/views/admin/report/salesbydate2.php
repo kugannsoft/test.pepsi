@@ -29,31 +29,34 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     </div>
                                 </div>
 
+                               
                                 <div class="col-md-2">
-                                    <select class="form-control" name="route" id="route" multiple="multiple">
-                                        <option value="">--select location--</option>
+                                    <select class="form-control" name="newsalesperson" id="newsalesperson" >
+                                        <option value="">--Select Salesperson--</option>
+                                        <?php foreach ($salespersons AS $salesperson) { ?>
+                                            <option value="<?php echo $salesperson->RepID ?>"><?php echo $salesperson->RepName ?></option>
+                                        <?php } ?>
+                                    </select>
+                                    <!-- <input type="hidden" name="route_ar" id="route_ar"> -->
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-control" name="route" id="route">
+                                        <option value="">--select Route--</option>
                                         <?php foreach ($locations AS $loc) { ?>
                                             <option value="<?php echo $loc->location_id ?>"><?php echo $loc->location ?></option>
                                         <?php } ?>
                                     </select>
-                                    <input type="hidden" name="route_ar" id="route_ar">
+                                    <!-- <input type="hidden" name="route_ar" id="route_ar"> -->
                                 </div>
                                 <div class="col-md-2">
-                                    <select class="form-control" name="salesperson" id="salesperson">
-                                        <option value="">--select sales person--</option>
-                                        <?php foreach ($staff AS $loc) { ?>
-                                            <option value="<?php echo $loc->RepID ?>"><?php echo $loc->RepName ?></option>
+                                    <select class="form-control" name="customer" id="customer" >
+                                        <option value="">--Select Customer--</option>
+                                        <?php foreach ($customers AS $customer) { ?>
+                                            <option value="<?php echo $customer->CusCode ?>"><?php echo $customer->CusName ?></option>
                                         <?php } ?>
                                     </select>
+                                    
                                 </div>
-                                <div class="col-md-2">
-                                        <select class="form-control" name="inv_type" id="inv_type">
-                                            <option value="">--select inv type--</option>
-                                            <option value="2">Tax</option>
-                                            <option value="1">General</option>
-                                            <option value="3">Credit</option>
-                                        </select>
-                                    </div>
                                 <div class="col-md-1">
                                     <button type="submit" class="btn btn-flat btn-success">Show</button>
                                 </div>
@@ -150,7 +153,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     });
     
       $("#route").select2({
-          placeholder: "Select a location"
+          placeholder: "Select a Route"
       });
     var loc =[];
  $("#route").change(function(){
@@ -161,6 +164,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     });
     $("#route_ar").val(JSON.stringify(loc));
  });
+
+ 
  
     $('#filterform').submit(function (e) {
         e.preventDefault();
