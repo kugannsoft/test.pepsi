@@ -1589,6 +1589,7 @@ $arr[] =null;
                         'JobDescription' => $descArr[$i],
                         'SalesSerialNo' => $serialArray[$i],
                         'JobQty' => $qtyArr[$i],
+                        'JobQty' => $qtyArr[$i],
                         'JobPrice' => $sell_priceArr[$i],
                         'JobCost' => $costPriceArr[$i],
                         'JobQty' => $qtyArr[$i],

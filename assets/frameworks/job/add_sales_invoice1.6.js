@@ -1892,6 +1892,7 @@ $(document).ready(function() {
         var warrantytypeArr = JSON.stringify(warrantytype);
         var is_returnArr = JSON.stringify(is_return);
         var return_typeArr = JSON.stringify(return_type);
+        alert(sendFree_qty);
 
 
         var r = confirm("Do you want to save this invoice.?");
@@ -3291,14 +3292,15 @@ $(document).ready(function() {
                 qty="${item.saleQuantity}" unit_price="${item.unitPrice}" netamount="${item.totalAmount}" 
                 netAmount="${item.totalNetAmount}" discount_precent="${item.disPresantage}" 
                 pro_discount="${item.disAmount}" cprice="${item.salesCostPrice}" 
-                org_unit_price="${item.unitPrice}" is_return="${item.IsReturn}" return_type="${item.ReturnType}" pL="${item.PriceLevel}">
+                org_unit_price="${item.unitPrice}" is_return="${item.IsReturn}" return_type="${item.ReturnType}" 
+                pL="${item.PriceLevel}" fQ="${item.SalesFreeQty}">
                 
                     <td class='text-center'>${index + 1}</td>
                     <td class='text-left'>${item.productCode}</td>
                     <td>${item.productName}</td>
                     <td>${item.unitOrCase}</td>
                     <td class='qty${index + 1} text-center'>${item.saleQuantity}</td>
-                    <td class='text-center'>0</td> 
+                    <td class='text-center'>${item.SalesFreeQty}</td> 
                     <td class='text-right'>${item.unitPrice}</td>
                     <td class='text-center'>${item.disPresantage}</td>
                     <td class='text-right'>${item.totalAmount}</td>
