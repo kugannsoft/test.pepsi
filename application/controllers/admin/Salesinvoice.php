@@ -4401,7 +4401,7 @@ public function all_delivery_note() {
         $this->datatables->join('customer', 'customer.CusCode = tempsalesinvoicehed.customerId');
         $this->datatables->join('customer_routes', 'customer_routes.id = customer.RouteId');
         $this->datatables->join('salespersons', 'salespersons.RepID = customer.HandelBy');
-
+        $this->datatables->where('tempsalesinvoicehed.IsActive',1);
         echo $this->datatables->generate();
         die();
     }
