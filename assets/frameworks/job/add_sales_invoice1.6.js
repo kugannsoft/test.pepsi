@@ -3268,10 +3268,12 @@ $(document).ready(function() {
         //cal_total(total_amount2, total_discount, totalExtraChrages, downPayment, total_dwn_interest, total_qur_interest, totalIterest, totalExtraAmount);
 
         $.each(orderDetails, function(index, item) {
-            total_amount2 += parseFloat(item.totalAmount);
             let isReturnText = item.IsReturn == 1 ? 'Return' : 'Sale';
             let returnType = parseInt(item.ReturnType);
             let returnTypeText = '';
+             if (item.IsReturn == 0) {
+                total_amount2 += parseFloat(item.totalAmount);
+             }
             switch (returnType) {
                 case 1:
                     returnTypeText = 'Normal';
@@ -3291,14 +3293,15 @@ $(document).ready(function() {
                 qty="${item.saleQuantity}" unit_price="${item.unitPrice}" netamount="${item.totalAmount}" 
                 netAmount="${item.totalNetAmount}" discount_precent="${item.disPresantage}" 
                 pro_discount="${item.disAmount}" cprice="${item.salesCostPrice}" 
-                org_unit_price="${item.unitPrice}" is_return="${item.IsReturn}" return_type="${item.ReturnType}" pL="${item.PriceLevel}">
+                org_unit_price="${item.unitPrice}" is_return="${item.IsReturn}" return_type="${item.ReturnType}" 
+                pL="${item.PriceLevel}" fQ="${item.SalesFreeQty}">
                 
                     <td class='text-center'>${index + 1}</td>
                     <td class='text-left'>${item.productCode}</td>
                     <td>${item.productName}</td>
                     <td>${item.unitOrCase}</td>
                     <td class='qty${index + 1} text-center'>${item.saleQuantity}</td>
-                    <td class='text-center'>0</td> 
+                    <td class='text-center'>${item.SalesFreeQty}</td> 
                     <td class='text-right'>${item.unitPrice}</td>
                     <td class='text-center'>${item.disPresantage}</td>
                     <td class='text-right'>${item.totalAmount}</td>
@@ -3313,8 +3316,9 @@ $(document).ready(function() {
                 </tr>`;
             tbody.append(row);
         });
-        cal_total(total_amount2, total_discount, totalExtraChrages, downPayment, total_dwn_interest, total_qur_interest, totalIterest, totalExtraAmount);
-
+       
+            cal_total(total_amount2, total_discount, totalExtraChrages, downPayment, total_dwn_interest, total_qur_interest, totalIterest, totalExtraAmount);
+        
     }
     function nl2br (str, is_xhtml) {
         var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br />' : '<br>';

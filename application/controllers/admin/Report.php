@@ -1942,6 +1942,7 @@ public function loadreport1() {
         $this->data['breadcrumb'] = $this->breadcrumbs->show();
         $this->data['locations'] = $this->Report_model->loadroot();
         $this->data['products'] = $this->Report_model->loadproduct();
+        $this->data['salespersons'] = $this->Report_model->loademployee();
         $location = $_SESSION['location'];
         $this->load->model('admin/Job_model');
         $id3 = array('CompanyID' => $location);
