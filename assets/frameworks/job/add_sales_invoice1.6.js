@@ -3268,10 +3268,12 @@ $(document).ready(function() {
         //cal_total(total_amount2, total_discount, totalExtraChrages, downPayment, total_dwn_interest, total_qur_interest, totalIterest, totalExtraAmount);
 
         $.each(orderDetails, function(index, item) {
-            total_amount2 += parseFloat(item.totalAmount);
             let isReturnText = item.IsReturn == 1 ? 'Return' : 'Sale';
             let returnType = parseInt(item.ReturnType);
             let returnTypeText = '';
+             if (item.IsReturn == 0) {
+                total_amount2 += parseFloat(item.totalAmount);
+             }
             switch (returnType) {
                 case 1:
                     returnTypeText = 'Normal';
@@ -3314,8 +3316,9 @@ $(document).ready(function() {
                 </tr>`;
             tbody.append(row);
         });
-        cal_total(total_amount2, total_discount, totalExtraChrages, downPayment, total_dwn_interest, total_qur_interest, totalIterest, totalExtraAmount);
-
+       
+            cal_total(total_amount2, total_discount, totalExtraChrages, downPayment, total_dwn_interest, total_qur_interest, totalIterest, totalExtraAmount);
+        
     }
     function nl2br (str, is_xhtml) {
         var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br />' : '<br>';
