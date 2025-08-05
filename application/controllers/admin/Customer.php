@@ -851,9 +851,9 @@ class Customer extends Admin_Controller {
         // exit();
         $routes = [];
 
-        // Check if any rows are returned
+        
         if ($query->num_rows() > 0) {
-            // Fetch the results and store route_id and route_name
+      
             foreach ($query->result() as $row) {
                 $routes[] = [
                     'route_id' => $row->route_id,
@@ -861,14 +861,14 @@ class Customer extends Admin_Controller {
                 ];
             }
 
-            // Encode the result to JSON and return it
+         
             echo json_encode($routes);
         } else {
-            // Return an empty array if no routes are found
+         
             echo json_encode([]);
         }
 
-        // Exit after outputting the response
+    
         exit();
 
     }
