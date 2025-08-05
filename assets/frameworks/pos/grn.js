@@ -388,7 +388,7 @@ $(document).ready(function() {
             casecost = costPrice * qty;
         }
         // var itemCodeArrIndex = $.inArray(itemCode, itemcode);
-          var itemCodeSellingPrice = itemCode + '_' + sellingPrice;
+        var itemCodeSellingPrice = itemCode + '_' + sellingPrice;
         var itemCodesellArrIndex = $.inArray(itemCodeSellingPrice, itemcode);
 
         if (itemCode == '' || itemCode == 0) {
@@ -524,7 +524,7 @@ $(document).ready(function() {
                             "' nonDisTotalNet='" + totalNet2 + 
                             "' netAmount='" + totalNet + 
                             "' proDiscount='" + product_discount + 
-                            "' proDiscount='" + wholesalesPrice + 
+                            "' wholesalesPrice='" + wholesalesPrice + 
                             "' proName='" + prdName + "'>\n\
                         <td class='text-center'>" + i + "</td><td class='text-left'>" + itemCode + 
                         "</td><td>" + prdName + 
@@ -598,7 +598,7 @@ $(document).ready(function() {
                             "' nonDisTotalNet='" + totalNet2 + 
                             "' netAmount='" + totalNet + 
                             "' proDiscount='" + product_discount + 
-                             "' proDiscount='" + wholesalesPrice + 
+                            "' wholesalesPrice='" + wholesalesPrice + 
                             "' proName='" + prdName + "'>\n\
                 <td class='text-center'>" + i + "</td><td class='text-left'>" + itemCode + 
                 "</td><td>" + prdName + 
