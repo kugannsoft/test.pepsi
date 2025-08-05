@@ -1589,6 +1589,7 @@ $arr[] =null;
                         'JobDescription' => $descArr[$i],
                         'SalesSerialNo' => $serialArray[$i],
                         'JobQty' => $qtyArr[$i],
+                        'JobQty' => $qtyArr[$i],
                         'JobPrice' => $sell_priceArr[$i],
                         'JobCost' => $costPriceArr[$i],
                         'JobQty' => $qtyArr[$i],
@@ -4400,7 +4401,7 @@ public function all_delivery_note() {
         $this->datatables->join('customer', 'customer.CusCode = tempsalesinvoicehed.customerId');
         $this->datatables->join('customer_routes', 'customer_routes.id = customer.RouteId');
         $this->datatables->join('salespersons', 'salespersons.RepID = customer.HandelBy');
-
+        $this->datatables->where('tempsalesinvoicehed.IsActive',1);
         echo $this->datatables->generate();
         die();
     }
