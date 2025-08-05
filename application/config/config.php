@@ -17,7 +17,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | environments.
 |
 */
-$config['base_url'] = 'http://test.pepsi.nsoftsoft.com';//'http://nsoftapp.com/webpos/
+$config['base_url'] = 'http://localhost/test.pepsi.nsoftsoft.com_1';//'http://nsoftapp.com/webpos/
 
 /*
 |--------------------------------------------------------------------------
