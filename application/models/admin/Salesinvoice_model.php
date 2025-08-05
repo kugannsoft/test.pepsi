@@ -212,7 +212,7 @@ class Salesinvoice_model extends CI_Model {
                }
 
             }
-            //$this->db->update('tempsalesinvoicehed',array('IsActive'=>0),array('tempInvNo'=>$customerPonumber));
+            $this->db->update('tempsalesinvoicehed',array('IsActive'=>0),array('tempInvNo'=>$customerPonumber));
          }
         
         $cashAmount = $_POST['cashAmount'];

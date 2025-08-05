@@ -157,7 +157,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <td style="text-align:left;">Invoice Date</td>
                             <td style="text-align:left;">:</td>
                 
-                            <td style="text-align:right;"><?php echo $invHed->SalesDate; ?></td>
+                            <td style="text-align:right;"><?php echo date('Y-m-d', strtotime($invHed->SalesDate)); ?></td>
+
                         </tr>
 
 
@@ -166,8 +167,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <td style="text-align:left;">Customer Address</td>
                             <td style="text-align:left;">:</td>
                             <td style="text-align:right;">
-                            <?php echo $invCus->Address01; ?>,
-                            <?php echo $invCus->Address02; ?>,
+                            <?php echo $invCus->Address01; ?>
+                            <?php echo $invCus->Address02; ?>
                             <?php echo $invCus->Address03; ?>
                             </td>
                             <td></td>
@@ -175,7 +176,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <td style="text-align:left;">Invoice Time</td>
                             <td style="text-align:left;">:</td>
                            
-                        <td style="text-align:right;"><?php echo $invHed->SalesDate; ?></td>
+                            <td style="text-align:right;"><?php echo date('H:i:s', strtotime($invHed->SalesDate)); ?></td>
+
                        
                         </tr>
                         <tr style="text-align:left;font-size:13px;">
@@ -299,101 +301,77 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <?php } ?>
                             <tbody>
                             <?php
-                            $i=1;
-                            //var_dump($invDtlArr);
-                            foreach ($invDtl AS $invdata) {
+$i = 1;
+foreach ($invDtl as $invdata) {
+    if ($invdata->IsReturn != 0) continue;
 
-                                if($invHed->SalesInvType==1 || $invHed->SalesInvType==3){
-                                    //normal invoice
+    if ($invHed->SalesInvType == 1 || $invHed->SalesInvType == 3) {
+        // Normal invoice
+?>
+<tr style="line-height:14px; border:1px solid #000000;">
+    <td style="width:80px; border-right:1px solid #000000;"><?php echo $invdata->SalesProductCode; ?></td>
+    <td style="width:180px; border-right:1px solid #000000;">
+        <?php echo $invdata->SalesProductName."<br>".$invdata->SalesSerialNo; ?>
+    </td>
+    <td style="width:60px; border-right:1px solid #000000; text-align:center;">
+        <?php echo number_format(($invdata->SalesUnitPerCase), 0); ?>
+    </td>
+    <td style="width:60px; border-right:1px solid #000000; text-align:center;">
+        <?php echo number_format(($invdata->SalesQty), 0); ?>
+    </td>
+    <td style="width:60px; border-right:1px solid #000000; text-align:center;">
+        <?php echo number_format(($invdata->SalesFreeQty), 0); ?>
+    </td>
+    <td style="width:80px; border-right:1px solid #000000; text-align:right;" class="text-right">
+        <?php echo number_format(($invdata->SalesUnitPrice), 2); ?>
+    </td>
+    <td style="width:80px; border-right:1px solid #000000; text-align:right;" class="text-right">
+        <?php echo number_format(($invdata->SalesDisPercentage), 2); ?>
+    </td>
+    <td style="width:120px; border-right:1px solid #000000; text-align:right;" class="text-right">
+        <?php echo number_format(($invdata->SalesDisValue), 2); ?>
+    </td>
+    <td style="width:80px; border-right:1px solid #000000; text-align:right;" class="text-right">
+        <?php echo number_format(($invdata->SalesInvNetAmount), 2); ?>
+    </td>
+</tr>
+<?php
+    } elseif ($invHed->SalesInvType == 2) {
+        // Tax invoice
+?>
+<tr style="line-height:14px; border:1px solid #000000;">
+    <td style="width:80px; border-bottom:1px solid #e4dbdb;"><?php echo $invdata->SalesProductCode; ?></td>
+    <td style="width:180px; border-bottom:1px solid #e4dbdb;">
+        <?php echo $invdata->SalesProductName . "<br>" . $invdata->SalesSerialNo; ?>
+    </td>
+    <td style="width:60px; border-right:1px solid #000000; text-align:center;">
+        <?php echo number_format($invdata->SalesUnitPerCase, 0); ?>
+    </td>
+    <td style="width:60px; border-bottom:1px solid #e4dbdb; text-align:center;">
+        <?php echo number_format($invdata->SalesQty, 0); ?>
+    </td>
+    <td style="width:60px; border-right:1px solid #000000; text-align:center;">
+        <?php echo number_format($invdata->SalesFreeQty, 0); ?>
+    </td>
+    <td style="width:80px; border-bottom:1px solid #e4dbdb; text-align:right;" class="text-right">
+        <?php echo number_format($invdata->SalesUnitPrice, 2); ?>
+    </td>
+    <td style="width:80px; border-bottom:1px solid #e4dbdb; text-align:right;" class="text-right">
+        <?php echo number_format($invdata->SalesDisPercentage, 2); ?>
+    </td>
+    <td style="width:120px; border-bottom:1px solid #e4dbdb; text-align:right;" class="text-right">
+        <?php echo number_format($invdata->SalesDisValue, 2); ?>
+    </td>
+    <td style="width:80px; border-bottom:1px solid #e4dbdb; text-align:right;" class="text-right">
+        <?php echo number_format($invdata->SalesTotalAmount, 2); ?>
+    </td>
+</tr>
+<?php
+    }
+    $i++;
+}
+?>
 
-                                    ?>
-                                    <tr style="line-height:20px; border:1px solid #000000;">
-                                        <td style="width:80px; border-right:1px solid #000000;"><?php echo $invdata->SalesProductCode; ?></td>
-
-                                        <td style="width:180px; border-right:1px solid #000000;">
-                                            <?php echo $invdata->SalesProductName."<br>".$invdata->SalesSerialNo; ?>
-                                        </td>
-
-                                        <td style="width:60px; border-right:1px solid #000000; text-align:center;">
-                                            <?php echo number_format(($invdata->SalesUnitPerCase), 0); ?>
-                                        </td>
-
-                                        <td style="width:60px; border-right:1px solid #000000; text-align:center;">
-                                            <?php echo number_format(($invdata->SalesQty), 0); ?>
-                                        </td>
-
-                                        <td style="width:60px; border-right:1px solid #000000; text-align:center;">
-                                            <?php echo number_format(($invdata->SalesFreeQty), 0); ?>
-                                        </td>
-
-                                        <td style="width:80px; border-right:1px solid #000000; text-align:right;" class="text-right">
-                                            <?php echo number_format(($invdata->SalesUnitPrice), 2); ?>
-                                        </td>
-
-                                        <td style="width:80px; border-right:1px solid #000000; text-align:right;" class="text-right">
-                                            <?php echo number_format(($invdata->SalesDisPercentage), 2); ?>
-                                        </td>
-
-                                        <td style="width:120px; border-right:1px solid #000000; text-align:right;" class="text-right">
-                                            <?php echo number_format(($invdata->SalesDisValue), 2); ?>
-                                        </td>
-
-                                        <td style="width:80px; border-right:1px solid #000000; text-align:right;" class="text-right">
-                                            <?php echo number_format(($invdata->SalesInvNetAmount), 2); ?>
-                                        </td>
-                                    </tr>
-
-                                    <?php $i++;
-
-                                }elseif($invHed->SalesInvType==2){
-                                    //Tax Invoice
-
-                                    ?>
-                                    <tr style="line-height:20px; border:1px solid #000000;">
-                                        <td style="width:80px; border-bottom:1px solid #e4dbdb;">
-                                            <?php echo $invdata->SalesProductCode; ?>
-                                        </td>
-
-                                        <td style="width:180px; border-bottom:1px solid #e4dbdb;">
-                                            <?php echo $invdata->SalesProductName . "<br>" . $invdata->SalesSerialNo; ?>
-                                        </td>
-
-                                        <td style="width:60px; border-right:1px solid #000000; text-align:center;">
-                                            <?php echo number_format($invdata->SalesUnitPerCase, 0); ?>
-                                        </td>
-
-                                        <td style="width:60px; border-bottom:1px solid #e4dbdb; text-align:center;">
-                                            <?php echo number_format($invdata->SalesQty, 0); ?>
-                                        </td>
-
-                                        <td style="width:60px; border-right:1px solid #000000; text-align:center;">
-                                            <?php echo number_format($invdata->SalesFreeQty, 0); ?>
-                                        </td>
-
-                                        <td style="width:80px; border-bottom:1px solid #e4dbdb; text-align:right;" class="text-right">
-                                            <?php echo number_format($invdata->SalesUnitPrice, 2); ?>
-                                        </td>
-
-                                        <td style="width:80px; border-bottom:1px solid #e4dbdb; text-align:right;" class="text-right">
-                                            <?php echo number_format($invdata->SalesDisPercentage, 2); ?>
-                                        </td>
-
-                                        <td style="width:120px; border-bottom:1px solid #e4dbdb; text-align:right;" class="text-right">
-                                            <?php echo number_format($invdata->SalesDisValue, 2); ?>
-                                        </td>
-
-                                        <td style="width:80px; border-bottom:1px solid #e4dbdb; text-align:right;" class="text-right">
-                                            <?php echo number_format($invdata->SalesTotalAmount, 2); ?>
-                                        </td>
-                                    </tr>
-
-                                    <?php $i++;
-
-                                }
-                            }//foreach end
-                            // print_r($returnDtlArr);
-
-                            ?>
                             </tbody>
 
                             <tfoot>
@@ -569,7 +547,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
                                     </td></tr>
-                                <?php } } ?> -->
+                                <?php } } ?> 
 <br>
                             <table id="tbl_po_data" style="border-collapse:collapse;width:730px;padding:5px;font-size:15px;" border="0">
                                 <?php if($invHed->SalesInvType==2 || $invHed->SalesInvType==3){?>
@@ -605,14 +583,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <?php if ($invHed->SalesInvType == 1 || $invHed->SalesInvType == 3 || $invHed->SalesInvType == 2): ?>
                                     <?php if (!empty($creditInvoiceList)) : ?>
                                         <?php foreach ($creditInvoiceList as $creditInvoice): ?>
-                                            <tr style="line-height:20px; border:1px solid #000000;">
-                                                <td style="width:80px; border-right:1px solid #000000;"><?php echo $creditInvoice->InvoiceDate; ?></td>
-                                                <td style="width:180px; border-right:1px solid #000000;"><?php echo $creditInvoice->InvoiceNo; ?></td>
-                                                <td style="width:60px; border-right:1px solid #000000;"><?php echo number_format($creditInvoice->NetAmount, 2); ?></td>
-                                                <td style="width:60px; border-right:1px solid #000000;"><?php echo number_format($creditInvoice->CreditAmount, 2); ?></td>
-                                                <td style="width:60px; border-right:1px solid #000000;"><?php echo number_format($creditInvoice->SettledAmount, 2); ?></td>
-                                                <td style="width:60px; border-right:1px solid #000000;"><?php echo number_format($creditInvoice->CreditAmount - $creditInvoice->SettledAmount - $creditInvoice->returnAmount, 2); ?></td>
-                                            </tr>
+                                            <tr style="line-height:14px; border:1px solid #000000;">
+                                            <td style="width:80px; padding:2px 4px; border-right:1px solid #000000;">
+    <?php echo date('Y-m-d', strtotime($creditInvoice->InvoiceDate)); ?>
+</td>
+
+    <td style="width:180px; padding:2px 4px; border-right:1px solid #000000;"><?php echo $creditInvoice->InvoiceNo; ?></td>
+    <td style="width:60px; padding:2px 4px; border-right:1px solid #000000;"><?php echo number_format($creditInvoice->NetAmount, 2); ?></td>
+    <td style="width:60px; padding:2px 4px; border-right:1px solid #000000;"><?php echo number_format($creditInvoice->CreditAmount, 2); ?></td>
+    <td style="width:60px; padding:2px 4px; border-right:1px solid #000000;"><?php echo number_format($creditInvoice->SettledAmount, 2); ?></td>
+    <td style="width:60px; padding:2px 4px; border-right:1px solid #000000;"><?php echo number_format($creditInvoice->CreditAmount - $creditInvoice->SettledAmount - $creditInvoice->returnAmount, 2); ?></td>
+</tr>
+
                                         <?php endforeach; ?>
                                     <?php else: ?>
                                         <tr><td colspan="6" style="text-align:center;">No previous credit invoices found.</td></tr>
@@ -641,56 +623,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </thead>
 
                             <tbody>
-                            <?php
-                            $i=1;
-                            //var_dump($invDtlArr);
-                            foreach ($invDtl AS $invdata) {
+<?php
+$i = 1;
+foreach ($invDtl as $invdata) {
+    if ($invdata->IsReturn == 1) {
+        ?>
+        <tr style="line-height:14px; border:1px solid #000000;">
+            <td style="width:80px; border-right:1px solid #000000;"><?php echo $invdata->SalesProductCode; ?></td>
+            <td style="width:80px; border-right:1px solid #000000;"><?php echo $invdata->SalesProductName; ?></td>
+            <td style="width:80px; border-right:1px solid #000000;"><?php echo number_format($invdata->SalesReturnQty, 0); ?></td>
+            <td style="width:80px; border-right:1px solid #000000;">
+                <?php
+                echo ($invdata->ReturnType == 1) ? 'Normal Return' :
+                    (($invdata->ReturnType == 2) ? 'Damaged Return' :
+                    (($invdata->ReturnType == 3) ? 'Expired Return' : 'Sales'));
+                ?>
+            </td>
+        </tr>
+        <?php
+        $i++;
+    }
+}
+?>
+</tbody>
 
-                                if($invHed->SalesInvType==1 || $invHed->SalesInvType==3){
-                                    //normal invoice
-
-                                    ?>
-                                    <tr style="line-height:20px; border:1px solid #000000;">
-                                        <td style="width:80px; border-right:1px solid #000000;"><?php echo $invdata->SalesProductCode; ?></td>
-                                        <td style="width:80px; border-right:1px solid #000000;"><?php echo $invdata->SalesProductName; ?></td>
-                                        <td style="width:80px; border-right:1px solid #000000;"><?php echo number_format(($invdata->SalesReturnQty),0)?></td>
-                                        <td style="width:80px; border-right:1px solid #000000;">
-                                            <?php
-                                            echo ($invdata->ReturnType == 1) ? 'Normal Return' :
-                                                ($invdata->ReturnType == 2) ? 'Damaged Return' :
-                                                (($invdata->ReturnType == 3) ? 'Expired Return' : 'Sales');
-                                            ?>
-                                        </td>
-
-
-                                    </tr>
-
-                                    <?php $i++;
-
-                                }elseif($invHed->SalesInvType==2){
-                                    //Tax Invoice
-
-                                    ?>
-                                    <tr style="line-height:20px; border:1px solid #000000;">
-                                        <td style="width:80px; border-right:1px solid #000000;"><?php echo $invdata->SalesProductCode; ?></td>
-                                        <td style="width:80px; border-right:1px solid #000000;"><?php echo $invdata->SalesProductName; ?></td>
-                                        <td style="width:80px; border-right:1px solid #000000;"><?php echo number_format(($invdata->SalesReturnQty),0)?></td>
-                                        <td style="width:80px; border-right:1px solid #000000;"> <?php
-                                            echo ($invdata->ReturnType == 1) ? 'Normal Return' :
-                                                ($invdata->ReturnType == 2) ? 'Damaged Return' :
-                                                    (($invdata->ReturnType == 3) ? 'Expired Return' : 'Sales');
-                                            ?></td>
-
-                                    </tr>
-
-                                    <?php $i++;
-
-                                }
-                            }//foreach end
-                            // print_r($returnDtlArr);
-
-                            ?>
-                            </tbody>
                             <tfoot>
 
 
