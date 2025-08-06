@@ -129,11 +129,14 @@ $('.prd_icheck').iCheck({
         $("#tbl_payment tbody").html("");
     });
     cusCode =$("#customer").val();
+  
 
-    // if(cusCode!=''){
-    //     loadCustomerDatabyId(cusCode);
-    // }
-   
+    if(cusCode!=''){
+        loadCustomerDatabyId(cusCode);
+    }
+
+
+
 
     $("#advanceno").autocomplete({
         source: function(request, response) {

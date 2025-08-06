@@ -34,7 +34,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             <option value="">-Select a sales person-</option>
                                             <?php foreach ($salesperson as $trns) { ?>
                                                 <option value="<?php echo $trns->RepID; ?>"
-                                                    <?php echo ($trns->RepID == $selectedSalespersonID) ? 'selected' : ''; ?>>
+                                                    <?php echo ($trns->RepID == $HandelBy) ? 'selected' : ''; ?>>
                                                     <?php echo $trns->RepName; ?>
                                                 </option>
                                             <?php } ?>
@@ -50,7 +50,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             <?php if (!empty($routes)) {
                                                 foreach ($routes as $route) { ?>
                                                     <option value="<?php echo $route->id; ?>"
-                                                        <?php echo (isset($selectedRoute) && $route->id == $selectedRoute) ? 'selected' : ''; ?>>
+                                                        <?php echo (isset($RouteId) && $route->id == $RouteId) ? 'selected' : ''; ?>>
                                                         <?php echo $route->name; ?>
                                                     </option>
                                                 <?php }
@@ -58,8 +58,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         </select>
                                     </div>
                                 </div>
-
-                                <div class="form-group">
+                              
+                                    <div class="form-group">
                                     <label for="customer" class="col-sm-5 control-label">Customer <span class="required">*</span></label>
                                     <div class="col-sm-6">
                                         <!-- <input type="text" class="form-control" autofocus required="required"  name="customer" id="customer" placeholder="Enter Customer" value="<?php echo $customer; ?>"> -->
@@ -67,13 +67,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             <option value="0">-Select a customer-</option>
                                             <?php foreach ($allroutecustomer as $trns) { ?>
                                                 <option value="<?php echo $trns->CusCode; ?>"
-                                                    <?php echo ($trns->CusCode == $selectedcus) ? 'selected' : ''; ?>>
+                                                    <?php echo ($trns->CusCode == $customer) ? 'selected' : ''; ?>>
                                                     <?php echo $trns->DisplayName; ?>
                                                 </option>
                                             <?php } ?>
                                         </select>
                                     </div>
                                 </div>
+                              
+                                
                                 
                                 <div class="form-group">
                                     <label for="customer" class="col-sm-5 control-label">Receipt Type <span class="required">*</span></label>
@@ -347,12 +349,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </style>
 <script type="text/javascript">
 
-        $('#customer').select2({
-        placeholder: "Select a customer",
-        allowClear: true,
-        minimumInputLength:1,
-        width: '100%'
-    });
+   
 
 
 
